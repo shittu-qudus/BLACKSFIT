@@ -1,49 +1,51 @@
 'use client';
+
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const BlacksfitBanner = () => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Fallback gradient background
-  const fallbackBackground = "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0f0f0f 100%)";
+  const fallbackBackground =
+    'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0f0f0f 100%)';
 
   return (
     <div className="relative w-full h-screen bg-black text-white overflow-hidden">
-      {/* Background Image with Error Handling */}
+      {/* Optimized Background Image */}
       {!imageError && (
-        <img
+        <Image
           src="/image/newbg.png"
           alt="Blacksfit banner"
-          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          onLoad={() => setImageLoaded(true)}
+          fill
+          priority
+          onLoadingComplete={() => setImageLoaded(true)}
           onError={() => {
             setImageError(true);
             console.log('Image failed to load: /image/newbg.png');
           }}
+          className={`object-cover object-center transition-opacity duration-500 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
         />
       )}
-      
-      {/* Fallback Background */}
-      <div 
+
+      {/* Fallback Gradient Background */}
+      <div
         className="absolute inset-0 w-full h-full"
-        style={{ 
+        style={{
           background: imageError || !imageLoaded ? fallbackBackground : 'transparent',
-          backgroundAttachment: 'fixed'
+          backgroundAttachment: 'fixed',
         }}
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-50" />
-<div 
-  className="absolute inset-0 w-full h-full bg-cover bg-center"
-  style={{ backgroundImage: 'url(/image/newbg.png)' }}
-/>
-      <div className="absolute inset-0 flex flex-col justify-center items-start px-6 md:px-20 z-10 text-left">
+      <div className="absolute inset-0 bg-black bg-opacity-50 z-10" />
+
+      {/* Content */}
+      <div className="absolute inset-0 flex flex-col justify-center items-start px-6 md:px-20 z-20 text-left">
         <motion.h1
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -82,9 +84,11 @@ const BlacksfitBanner = () => {
           transition={{ delay: 1.5, duration: 0.8 }}
           className="mt-8"
         >
-          <button className="inline-block px-6 py-3 bg-white text-black font-semibold text-sm md:text-base rounded-full shadow-md hover:bg-gray-200 transition cursor-pointer">
-            <Link href="/shop">shop now</Link>
-          </button>
+          <Link href="/shop">
+            <button className="inline-block px-6 py-3 bg-white text-black font-semibold text-sm md:text-base rounded-full shadow-md hover:bg-gray-200 transition cursor-pointer">
+              shop now
+            </button>
+          </Link>
         </motion.div>
 
         <motion.p
@@ -97,9 +101,9 @@ const BlacksfitBanner = () => {
         </motion.p>
       </div>
 
-      {/* Debug Info - Remove in production */}
+      {/* Debug message for missing image */}
       {imageError && (
-        <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded text-xs z-20">
+        <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded text-xs z-30">
           Image not found: /image/newbg.png
         </div>
       )}

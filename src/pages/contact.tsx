@@ -262,9 +262,11 @@ const BlacksfitContact = () => {
               Get In Touch
             </h1>
             <div className="w-24 h-1 bg-white mx-auto mb-8" />
-            <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto">
-              Ready to transform your fitness journey? Let's connect and build something amazing together.
-            </p>
+            // 👇 line ~266
+<p className="text-xl md:text-2xl font-light max-w-3xl mx-auto">
+  Ready to transform your fitness journey? Let&apos;s connect and build something amazing together.
+</p>
+
           </div>
         </div>
       </section>
@@ -324,7 +326,7 @@ const BlacksfitContact = () => {
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Send Us A Message</h2>
             <div className="w-24 h-1 bg-white mx-auto mb-8" />
-            <p className="text-xl text-gray-300">Let's discuss how we can help you achieve your fitness goals</p>
+           <p className="text-xl text-gray-300">Let&apos;s discuss how we can help you achieve your fitness goals</p>
           </div>
 
           <div
@@ -509,7 +511,9 @@ const BlacksfitContact = () => {
                     <CheckCircle className="w-12 h-12 animate-bounce" />
                     <span className="text-2xl font-bold">Thank You!</span>
                     <p className="text-lg">Your message has been sent successfully.</p>
-                    <p className="text-sm text-green-300">We'll get back to you within 24 hours.</p>
+             
+<p className="text-sm text-green-300">We&apos;ll get back to you within 24 hours.</p>
+
                     {showConfetti && (
                       <div className="relative w-full h-24 overflow-hidden mt-5">
                         {[...Array(50)].map((_, i) => (

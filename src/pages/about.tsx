@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronDown, Users, Heart, Target, Globe } from 'lucide-react';
 
 const BlacksfitAbout = () => {
-  const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
-
+    const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -143,9 +142,8 @@ const BlacksfitAbout = () => {
                 the East, and the artistic excellence of the Yoruba in the West.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Our brand embodies the <span className="font-semibold text-black">Ubuntu</span> philosophy 
-                that resonates across Africa: <em>"I am because we are."</em> This interconnectedness drives 
-                everything we do.
+                Our brand embodies the <span className="font-semibold text-black">Ubuntu</span> philosophy that resonates across Africa: <em>&quot;I am because we are.&quot;</em>
+
               </p>
             </div>
 
@@ -233,7 +231,8 @@ const BlacksfitAbout = () => {
                 <div className="space-y-4">
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-white rounded-full mt-3 flex-shrink-0"/>
-                    <p className="text-black">Celebrate and amplify Africa's natural athletic heritage and strength traditions</p>
+                 <p className="text-black">Celebrate and amplify Africa&apos;s natural athletic heritage and strength traditions</p>
+
                   </div>
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-white rounded-full mt-3 flex-shrink-0"/>
@@ -267,10 +266,11 @@ const BlacksfitAbout = () => {
             
             <div className="mt-12 text-center">
               <div className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm border border-white border-opacity-20 max-w-4xl mx-auto">
-                <p className="text-xl  text-black font-light italic">
-                  "We believe fitness in Lagos should honor Nigerian values, wellness in Abuja should reflect our climate, 
-                  and strength training across Africa should celebrate the power that runs through our ancestral lines."
-                </p>
+               <p className="text-xl  text-black font-light italic">
+  &quot;We believe fitness in Lagos should honor Nigerian values, wellness in Abuja should reflect our climate, 
+  and strength training across Africa should celebrate the power that runs through our ancestral lines.&quot;
+</p>
+
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ import {
     incrementQuantity, 
     decrementQuantity, 
     clearCart,
-    decrementFromCart 
+    
 } from '../comps/cartSlice';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
@@ -294,7 +294,7 @@ const useResponsive = () => {
 const CartDisplay: React.FC = () => {
     const dispatch = useAppDispatch();
     const cartItems = useAppSelector(state => state.cart.items);
-    const cartTotal = useAppSelector(state => state.cart.total);
+    // const cartTotal = useAppSelector(state => state.cart.total);
     const { isMobile, isTablet } = useResponsive();
     
     const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -393,7 +393,7 @@ const CartDisplay: React.FC = () => {
             {/* Cart Items */}
             <div style={styles.itemsList}>
                 <AnimatePresence mode="popLayout">
-                    {cartItems.map((item, index) => (
+                    {cartItems.map((item) => (
                         <motion.div 
                             key={item.id}
                             style={getCartItemStyle()}

@@ -1,11 +1,9 @@
-// components/CartDisplay.tsx
 import React from 'react';
 import Image from 'next/image';
 import { useAppSelector, useAppDispatch } from '../comps/hooks';
 import { 
     removeFromCart, 
     incrementQuantity, 
-    decrementQuantity, 
     clearCart,
     decrementFromCart 
 } from '../comps/cartSlice';
@@ -23,10 +21,6 @@ const CartDisplay: React.FC = () => {
 
     const handleIncrement = (itemId: number) => {
         dispatch(incrementQuantity(itemId));
-    };
-
-    const handleDecrement = (itemId: number) => {
-        dispatch(decrementQuantity(itemId));
     };
 
     const handleDecrementFromCart = (itemId: number) => {
@@ -54,6 +48,7 @@ const CartDisplay: React.FC = () => {
 
     return (
         <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '5px', margin: '20px 0' }}>
+            
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h2>Shopping Cart ({totalQuantity} items)</h2>
                 <button 
@@ -105,7 +100,7 @@ const CartDisplay: React.FC = () => {
                         {/* Quantity Controls */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <button 
-                                onClick={() => handleDecrement(item.id)}
+                                onClick={() => handleDecrementFromCart(item.id)}
                                 style={{ 
                                     padding: '5px 10px', 
                                     backgroundColor: '#6c757d', 
