@@ -262,7 +262,7 @@ const BlacksfitContact = () => {
               Get In Touch
             </h1>
             <div className="w-24 h-1 bg-white mx-auto mb-8" />
-            // 👇 line ~266
+          
 <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto">
   Ready to transform your fitness journey? Let&apos;s connect and build something amazing together.
 </p>
