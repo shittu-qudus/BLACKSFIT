@@ -6,84 +6,143 @@ import { addToCart, decrementFromCart } from '../comps/cartSlice';
 import { productData } from '../comps/productData';
 import { Api } from '../comps/types';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import { motion } from "framer-motion";
-import Footer from '@/comps/footer';
-// Lazy load heavy components
-const CartDisplay = dynamic(() => import('@/components/cartDisplay'), {
-    loading: () => <div>Loading cart...</div>
-});
-
-const PaystackCheckout = dynamic(() => import('../components/PaystackCheckout'), {
-    loading: () => <div>Loading checkout...</div>
-});
-
-// Move styles outside component to prevent recreation
+import BlacksfitBanner from '@/comps/bg';
+// Unified styles object
 const styles = {
-    container: { padding: '20px', fontFamily: 'Arial, sans-serif' },
-    cartSummary: { 
-        marginBottom: '30px', 
-        padding: '15px', 
-        border: '1px solid #ddd', 
-        borderRadius: '5px',
-        backgroundColor: '#f8f9fa'
+    container: { 
+        fontFamily: 'Arial, sans-serif',
+        backgroundColor: '#000',
+        color: '#fff',
+        minHeight: '100vh'
     },
-    cartSummaryFlex: { display: 'flex', gap: '20px', alignItems: 'center' },
-    cartItemsContainer: { display: 'flex', flexWrap: 'wrap', gap: '10px' },
+  
+    cartSummary: { 
+        margin: '2rem',
+        padding: '1.5rem', 
+        border: '1px solid #333', 
+        borderRadius: '10px',
+        backgroundColor: '#111'
+    },
+    cartSummaryFlex: { 
+        display: 'flex', 
+        gap: '20px', 
+        alignItems: 'center',
+        flexWrap: 'wrap' as const
+    },
+    cartItemsContainer: { 
+        display: 'flex', 
+        flexWrap: 'wrap' as const, 
+        gap: '10px',
+        marginTop: '1rem'
+    },
     cartItem: { 
-        padding: '5px 10px', 
+        padding: '8px 12px', 
         backgroundColor: '#007bff', 
         color: 'white', 
-        borderRadius: '15px',
-        fontSize: '12px'
+        borderRadius: '20px',
+        fontSize: '0.875rem',
+        fontWeight: '500' as const
     },
-    productsGrid: { 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-        gap: '20px' 
+    productsSection: {
+        padding: '2rem'
     },
-    productCard: { 
-        padding: '15px', 
-        borderRadius: '5px',
-        position: 'relative' as const
+    productsGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '1.5rem',
+        marginTop: '1rem'
     },
-    inCartBadge: { 
-        position: 'absolute' as const, 
-        top: '10px', 
+    productCard: {
+        padding: '1.5rem',
+        borderRadius: '10px',
+        backgroundColor: '#111',
+        boxShadow: '0 4px 15px rgba(255, 255, 255, 0.1)',
+        transition: 'all 0.3s ease',
+        position: 'relative' as const,
+        border: '1px solid #333'
+    },
+    productCardInCart: {
+        border: '2px solid #007bff',
+        boxShadow: '0 4px 15px rgba(0, 123, 255, 0.3)'
+    },
+    inCartBadge: {
+        position: 'absolute' as const,
+        top: '10px',
         right: '10px',
         backgroundColor: '#28a745',
         color: 'white',
-        padding: '5px 8px',
-        borderRadius: '10px',
-        fontSize: '12px',
+        padding: '6px 10px',
+        borderRadius: '15px',
+        fontSize: '0.75rem',
         fontWeight: 'bold' as const
     },
-    buttonContainer: { display: 'flex', gap: '10px', flexWrap: 'wrap' as const },
-    button: { 
-        padding: '8px 16px', 
-        border: 'none', 
-        borderRadius: '3px',
-        cursor: 'pointer',
-        flex: '1',
-        minWidth: '120px'
+    productTitle: {
+        fontSize: '1.25rem',
+        fontWeight: 'bold' as const,
+        marginBottom: '0.5rem',
+        color: '#fff'
     },
-    addButton: { backgroundColor: '#007bff', color: 'white' },
-    removeButton: { backgroundColor: '#dc3545', color: 'white' },
-    postCard: { 
-        marginBottom: '20px', 
-        padding: '15px', 
-        border: '1px solid #eee', 
-        borderRadius: '5px' 
+    productInfo: {
+        color: '#ccc',
+        marginBottom: '0.5rem'
+    },
+    productPrice: {
+        fontSize: '1.1rem',
+        fontWeight: 'bold' as const,
+        color: '#007bff',
+        marginBottom: '1rem'
+    },
+    imageContainer: {
+        marginBottom: '1rem',
+        borderRadius: '8px',
+        overflow: 'hidden'
+    },
+    buttonContainer: {
+        display: 'flex',
+        gap: '0.75rem',
+        marginTop: '1rem'
+    },
+    button: {
+        flex: 1,
+        padding: '0.75rem 1rem',
+        fontSize: '0.9rem',
+        fontWeight: 'bold' as const,
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease'
+    },
+    addButton: {
+        backgroundColor: '#007bff',
+        color: 'white'
+    },
+    removeButton: {
+        backgroundColor: '#dc3545',
+        color: 'white'
     }
 } as const;
 
+// Animation variants
+const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (index: number) => ({
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.5,
+            delay: index * 0.1,
+            ease: "easeOut"
+        }
+    })
+};
 
 export default function Home({ details }: { details: Api[] }) {
     const dispatch = useAppDispatch();
     const products = useAppSelector(state => state.products.products);
     const cartItems = useAppSelector(state => state.cart.items);
     const cartTotal = useAppSelector(state => state.cart.total);
-    
+
     // Memoize expensive calculations
     const totalItemsInCart = useMemo(() => 
         cartItems.reduce((sum, item) => sum + item.quantity, 0), 
@@ -122,36 +181,61 @@ export default function Home({ details }: { details: Api[] }) {
         return cartItemsMap.has(productId);
     }, [cartItemsMap]);
 
-    // Memoize cart items display
-    const cartItemsDisplay = useMemo(() => (
-        <div style={{ marginTop: '10px' }}>
-            <h4>Items in Cart:</h4>
-            <div style={styles.cartItemsContainer}>
-                {cartItems.map(item => (
-                    <span 
-                        key={item.id}
-                        style={styles.cartItem}
-                    >
-                        {item.name} x{item.quantity}
-                    </span>
-                ))}
+    // Memoize cart summary display
+    const cartSummaryDisplay = useMemo(() => (
+        <motion.div 
+            style={styles.cartSummary}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
+            <div style={styles.cartSummaryFlex}>
+                <div>
+                    <h3>Cart Summary</h3>
+                    <p>Total Items: <strong>{totalItemsInCart}</strong></p>
+                    <p>Total Value: <strong>₦{cartTotal.toLocaleString()}</strong></p>
+                </div>
             </div>
-        </div>
-    ), [cartItems]);
+            
+            {cartItems.length > 0 && (
+                <div>
+                    <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>Items in Cart:</h4>
+                    <div style={styles.cartItemsContainer}>
+                        {cartItems.map(item => (
+                            <span 
+                                key={item.id}
+                                style={styles.cartItem}
+                            >
+                                {item.name} x{item.quantity}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </motion.div>
+    ), [cartItems, totalItemsInCart, cartTotal]);
 
     // Memoize products display
     const productsDisplay = useMemo(() => (
         <div style={styles.productsGrid}>
-            {products.map((product) => {
+            {products.map((product, index) => {
                 const quantityInCart = getItemQuantityInCart(product.id);
                 const inCart = isItemInCart(product.id);
-                
+
                 return (
-                    <div 
-                        key={product.id} 
-                        style={{ 
+                    <motion.div 
+                        key={product.id}
+                        style={{
                             ...styles.productCard,
-                            border: inCart ? '2px solid #28a745' : '1px solid #ddd'
+                            ...(inCart ? styles.productCardInCart : {})
+                        }}
+                        variants={cardVariants}
+                        initial="hidden"
+                        animate="visible"
+                        custom={index}
+                        whileHover={{ 
+                            transform: 'translateY(-5px)',
+                            boxShadow: '0 8px 25px rgba(255, 255, 255, 0.15)'
                         }}
                     >
                         {inCart && (
@@ -159,78 +243,83 @@ export default function Home({ details }: { details: Api[] }) {
                                 In Cart: {quantityInCart}
                             </div>
                         )}
-                        
-                        <h3>{product.name}</h3>
-                        <p>Size: {product.size}</p>
-                      <p>Price: ₦{product.price.toLocaleString()}</p>
-                        
-                        <div style={{ marginBottom: '15px' }}>
+
+                        <h3 style={styles.productTitle}>{product.name}</h3>
+                        <p style={styles.productInfo}>Size: {product.size}</p>
+                        <p style={styles.productPrice}>₦{product.price.toLocaleString()}</p>
+
+                        <div style={styles.imageContainer}>
                             <Image 
                                 src={product.photoUrl}
-                                width={200}
+                                width={250}
                                 height={200}
                                 alt={`${product.name} product image`}
-                                style={{ objectFit: 'cover', borderRadius: '5px' }}
-                                priority={product.id <= 4} // Priority loading for first 4 images
+                                style={{ 
+                                    objectFit: 'cover', 
+                                    width: '100%',
+                                    height: 'auto',
+                                    filter: inCart ? 'grayscale(0%)' : 'grayscale(70%)',
+                                    transition: 'filter 0.3s ease'
+                                }}
+                                priority={index < 4}
                                 placeholder="blur"
-                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                             />
                         </div>
-                        
+
                         <div style={styles.buttonContainer}>
-                            <button 
+                            <motion.button
                                 onClick={() => handleAddToCart(product.id)}
-                                style={{ 
-                                    ...styles.button,
-                                    ...styles.addButton
-                                }}
+                                style={{ ...styles.button, ...styles.addButton }}
                                 type="button"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
                                 Add to Cart
-                            </button>
-                            
+                            </motion.button>
+
                             {inCart && (
-                                <button 
+                                <motion.button
                                     onClick={() => handleRemoveOneFromCart(product.id)}
-                                    style={{ 
-                                        ...styles.button,
-                                        ...styles.removeButton
-                                    }}
+                                    style={{ ...styles.button, ...styles.removeButton }}
                                     type="button"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                 >
                                     Remove One
-                                </button>
+                                </motion.button>
                             )}
                         </div>
-                    </div>
+                    </motion.div>
                 );
             })}
         </div>
     ), [products, getItemQuantityInCart, isItemInCart, handleAddToCart, handleRemoveOneFromCart]);
-const variants = {
-  hidden: { opacity: 0, y: -50 },
-  visible: {  opacity: 1,  y: 0, transition: {  duration: 2.5,ease: "easeOut"
-    }
-  }, 
-  exit: { opacity: 0, y: 50 }
-}
 
     return (
         <div style={styles.container}>
-     <motion.div
- variants={variants}
-  initial="hidden"
-  animate="visible"
-  exit="exit"
- 
->
-  Fades in and scales up
-</motion.div>
-            <h1>Black Fit Store</h1>
-            <i className="fa-regular fa-bell"></i>
-            
+          <BlacksfitBanner/>
             {/* Cart Summary */}
-            <div style={styles.cartSummary}>
+            {cartSummaryDisplay}
+            
+            {/* Products Section */}
+            <div style={styles.productsSection}>
+                <motion.h2 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6 }}
+                >
+                    Products ({products.length})
+                </motion.h2>
+                {productsDisplay}
+            </div>
+        </div>
+    );
+}
+
+
+   {/* Cart Summary */}
+            {/* <div style={styles.cartSummary}>
                 <h2>Cart Summary</h2>
                 <div style={styles.cartSummaryFlex}>
                     <p><strong>Unique Items:</strong> {cartItems.length}</p>
@@ -239,19 +328,4 @@ const variants = {
                 </div>
                 
                 {cartItems.length > 0 && cartItemsDisplay}
-            </div>
-
-            {/* Products */}
-            <div style={{ marginBottom: '30px' }}>
-                <h2>Products ({products.length})</h2>
-                {productsDisplay}
-            </div>
-
-            {/* Lazy loaded components */}
-            <PaystackCheckout />
-            <CartDisplay />
-           
-        <Footer/>
-        </div>
-    );
-}
+            </div> */}

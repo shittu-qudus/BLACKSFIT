@@ -635,7 +635,7 @@ const PaystackCheckout: React.FC = () => {
                                     style={{ 
                                         width: '100%', 
                                         padding: '10px', 
-                                        border: '1px solid #ddd', 
+                                        border: '1px solid black', 
                                         borderRadius: '3px',
                                         fontSize: '14px'
                                     }}
