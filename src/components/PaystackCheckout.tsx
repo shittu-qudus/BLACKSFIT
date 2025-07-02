@@ -405,7 +405,7 @@ const PaystackCheckout: React.FC = () => {
             
             handler.openIframe();
             
-            console.log('Iframe opened successfully');
+            console.log('Iframe opened successfully'  );
 
         } catch (error: any) {
             console.error('Detailed error in initializePaystack:', error);
@@ -635,7 +635,7 @@ const PaystackCheckout: React.FC = () => {
                                     style={{ 
                                         width: '100%', 
                                         padding: '10px', 
-                                        border: '1px solid black', 
+                                        border: '1px solid #ddd', 
                                         borderRadius: '3px',
                                         fontSize: '14px'
                                     }}
@@ -676,8 +676,8 @@ const PaystackCheckout: React.FC = () => {
                                     justifyContent: 'space-between',
                                     marginBottom: '5px'
                                 }}>
-                                    <span>{item.name} x {item.quantity}</span>
-                                    <span>₦{(item.price * item.quantity).toLocaleString()}</span>
+                                    <span className='text-black' >{item.name} x {item.quantity}</span>
+                                    <span className='text-black'>₦{(item.price * item.quantity).toLocaleString()}</span>
                                 </div>
                             ))}
                             <hr />
@@ -687,8 +687,8 @@ const PaystackCheckout: React.FC = () => {
                                 fontWeight: 'bold',
                                 fontSize: '18px'
                             }}>
-                                <span>Total:</span>
-                                <span>₦{cartTotal.toLocaleString()}</span>
+                                <span className='text-black'>Total:</span>
+                                <span className='text-black'>₦{cartTotal.toLocaleString()}</span>
                             </div>
                         </div>
                         
