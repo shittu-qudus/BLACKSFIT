@@ -8,7 +8,7 @@ import { Api } from '../comps/types';
 import Image from 'next/image';
 import { motion } from "framer-motion";
 import BlacksfitBanner from '@/comps/bg';
-// Unified styles object
+
 const styles = {
     container: { 
         fontFamily: 'Arial, sans-serif',
@@ -137,7 +137,7 @@ const cardVariants = {
     })
 };
 
-export default function Home({ details }: { details: Api[] }) {
+export default function Home() {
     const dispatch = useAppDispatch();
     const products = useAppSelector(state => state.products.products);
     const cartItems = useAppSelector(state => state.cart.items);

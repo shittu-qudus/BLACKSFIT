@@ -1,8 +1,8 @@
  'use client';
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import Link from 'next/link'
-
+import Image from 'next/image';
 const BlacksfitBanner = () => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -14,7 +14,7 @@ const BlacksfitBanner = () => {
     <div className="relative w-full h-screen bg-black text-white overflow-hidden">
       {/* Background Image with Error Handling */}
       {!imageError && (
-        <img
+        <Image
           src="/image/newbg.png"
           alt="Blacksfit banner"
           className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${

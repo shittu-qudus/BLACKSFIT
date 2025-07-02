@@ -15,4 +15,4 @@ export const productData: Product[] = [
     { id: 11, name: "Blacksfit Peice V", photoUrl: "/image/bus.jpeg", size: 44, price: 35000 },
     { id: 12, name: "Blacksfit Big Wiz Peice ", photoUrl: "/image/Bigwiz.png", size: 44, price: 35000 }
 ];
-console.log('Product image URLs:', productData.map(p => ({ name: p.name, url: p.photoUrl })));
+// console.log('Product image URLs:', productData.map(p => ({ name: p.name, url: p.photoUrl })));

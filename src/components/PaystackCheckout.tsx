@@ -688,7 +688,7 @@ const PaystackCheckout: React.FC = () => {
                                 fontSize: '18px'
                             }}>
                                 <span className='text-black'>Total:</span>
-                                <span className='text-black'>₦{cartTotal.toLocaleString()}</span>
+                                <span className='text-black' >₦{cartTotal.toLocaleString()}</span>
                             </div>
                         </div>
                         
