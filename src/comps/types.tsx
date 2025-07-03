@@ -4,6 +4,7 @@ export interface Product {
     photoUrl: string;
     size: number;
     price: number;
+    fullimage:string;
 }
 
 export interface CartItem extends Product {

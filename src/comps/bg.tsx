@@ -17,6 +17,9 @@ const BlacksfitBanner = () => {
         <Image
           src="/image/newbg.png"
           alt="Blacksfit banner"
+          height={100}
+          width={100}
+
           className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}

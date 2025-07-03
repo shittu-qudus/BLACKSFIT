@@ -1,5 +1,5 @@
-// pages/index.tsx - Optimized version
-import { useEffect, useMemo, useCallback } from 'react';
+// pages/index.tsx - Updated with shop-style animations and modal
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useAppSelector, useAppDispatch } from '../comps/hooks';
 import { setProducts } from '../comps/productSlice';
 import { addToCart, decrementFromCart } from '../comps/cartSlice';
@@ -47,15 +47,21 @@ const styles = {
     productsSection: {
         padding: '2rem'
     },
+    sectionTitle: {
+        fontSize: '2rem',
+        fontWeight: 'bold' as const,
+        marginBottom: '1.5rem',
+        color: '#fff'
+    },
     productsGrid: {
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         gap: '1.5rem',
-        marginTop: '1rem'
+        marginTop: '2rem'
     },
     productCard: {
         padding: '1.5rem',
-        borderRadius: '10px',
+        borderRadius: '15px',
         backgroundColor: '#111',
         boxShadow: '0 4px 15px rgba(255, 255, 255, 0.1)',
         transition: 'all 0.3s ease',
@@ -96,7 +102,8 @@ const styles = {
     imageContainer: {
         marginBottom: '1rem',
         borderRadius: '8px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        cursor: 'pointer'
     },
     buttonContainer: {
         display: 'flex',
@@ -123,7 +130,7 @@ const styles = {
     }
 } as const;
 
-// Animation variants
+// Animation variants - updated to match shop component
 const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (index: number) => ({
@@ -142,6 +149,26 @@ export default function Home() {
     const products = useAppSelector(state => state.products.products);
     const cartItems = useAppSelector(state => state.cart.items);
     const cartTotal = useAppSelector(state => state.cart.total);
+
+    // Modal state
+    const [modal, setModal] = useState<boolean>(false);
+    const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
+    const openModal = (product: any) => {
+        setSelectedProduct(product);
+        setModal(true);
+    };
+    
+    const closeModal = () => {
+        setModal(false);
+        setSelectedProduct(null);
+    };
+
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) {
+            closeModal();
+        }
+    };
 
     // Memoize expensive calculations
     const totalItemsInCart = useMemo(() => 
@@ -181,6 +208,86 @@ export default function Home() {
         return cartItemsMap.has(productId);
     }, [cartItemsMap]);
 
+    // Product card component - updated to match shop component
+    const ProductCard = ({ product, index }: { product: any, index: number }) => {
+        const quantityInCart = getItemQuantityInCart(product.id);
+        const inCart = isItemInCart(product.id);
+
+        return (
+            <motion.div 
+                key={product.id}
+                style={{
+                    ...styles.productCard,
+                    ...(inCart ? styles.productCardInCart : {})
+                }}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                custom={index}
+                whileHover={{ 
+                    transform: 'translateY(-5px)',
+                    boxShadow: '0 8px 25px rgba(255, 255, 255, 0.15)'
+                }}
+            >
+                {inCart && (
+                    <div style={styles.inCartBadge}>
+                        In Cart: {quantityInCart}
+                    </div>
+                )}
+
+                <h3 style={styles.productTitle}>{product.name}</h3>
+                <p style={styles.productInfo}>Size: {product.size}</p>
+                <p style={styles.productPrice}>₦{product.price.toLocaleString()}</p>
+
+                <div 
+                    onClick={() => openModal(product)} 
+                    style={styles.imageContainer}
+                >
+                    <Image 
+                        src={product.photoUrl}
+                        width={250}
+                        height={200}
+                        alt={`${product.name} product image`}
+                        style={{ 
+                            objectFit: 'cover', 
+                            width: '100%',
+                            height: 'auto',
+                            filter: inCart ? 'grayscale(0%)' : 'grayscale(20%)',
+                            transition: 'filter 0.3s ease'
+                        }}
+                        priority={index < 4}
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                    />
+                </div>
+
+                <div style={styles.buttonContainer}>
+                    <motion.button
+                        onClick={() => handleAddToCart(product.id)}
+                        style={{ ...styles.button, ...styles.addButton }}
+                        type="button"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        Add to Cart
+                    </motion.button>
+
+                    {inCart && (
+                        <motion.button
+                            onClick={() => handleRemoveOneFromCart(product.id)}
+                            style={{ ...styles.button, ...styles.removeButton }}
+                            type="button"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            Remove One
+                        </motion.button>
+                    )}
+                </div>
+            </motion.div>
+        );
+    };
+
     // Memoize cart summary display
     const cartSummaryDisplay = useMemo(() => (
         <motion.div 
@@ -215,90 +322,65 @@ export default function Home() {
         </motion.div>
     ), [cartItems, totalItemsInCart, cartTotal]);
 
-    // Memoize products display
-    const productsDisplay = useMemo(() => (
-        <div style={styles.productsGrid}>
-            {products.map((product, index) => {
-                const quantityInCart = getItemQuantityInCart(product.id);
-                const inCart = isItemInCart(product.id);
-
-                return (
-                    <motion.div 
-                        key={product.id}
-                        style={{
-                            ...styles.productCard,
-                            ...(inCart ? styles.productCardInCart : {})
-                        }}
-                        variants={cardVariants}
-                        initial="hidden"
-                        animate="visible"
-                        custom={index}
-                        whileHover={{ 
-                            transform: 'translateY(-5px)',
-                            boxShadow: '0 8px 25px rgba(255, 255, 255, 0.15)'
-                        }}
-                    >
-                        {inCart && (
-                            <div style={styles.inCartBadge}>
-                                In Cart: {quantityInCart}
-                            </div>
-                        )}
-
-                        <h3 style={styles.productTitle}>{product.name}</h3>
-                        <p style={styles.productInfo}>Size: {product.size}</p>
-                        <p style={styles.productPrice}>₦{product.price.toLocaleString()}</p>
-
-                        <div style={styles.imageContainer}>
-                            <Image 
-                                src={product.photoUrl}
-                                width={250}
-                                height={200}
-                                alt={`${product.name} product image`}
-                                style={{ 
-                                    objectFit: 'cover', 
-                                    width: '100%',
-                                    height: 'auto',
-                                    filter: inCart ? 'grayscale(0%)' : 'grayscale(70%)',
-                                    transition: 'filter 0.3s ease'
-                                }}
-                                priority={index < 4}
-                                placeholder="blur"
-                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                            />
-                        </div>
-
-                        <div style={styles.buttonContainer}>
-                            <motion.button
-                                onClick={() => handleAddToCart(product.id)}
-                                style={{ ...styles.button, ...styles.addButton }}
-                                type="button"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                Add to Cart
-                            </motion.button>
-
-                            {inCart && (
-                                <motion.button
-                                    onClick={() => handleRemoveOneFromCart(product.id)}
-                                    style={{ ...styles.button, ...styles.removeButton }}
-                                    type="button"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    Remove One
-                                </motion.button>
-                            )}
-                        </div>
-                    </motion.div>
-                );
-            })}
-        </div>
-    ), [products, getItemQuantityInCart, isItemInCart, handleAddToCart, handleRemoveOneFromCart]);
-
     return (
         <div style={styles.container}>
-          <BlacksfitBanner/>
+            <BlacksfitBanner/>
+            
+            {/* Modal - updated to match shop component */}
+            {modal && selectedProduct && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                    onClick={handleBackdropClick}
+                >
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
+                        <button
+                            onClick={closeModal}
+                            className="text-red-500 text-2xl absolute top-2 right-2 hover:text-red-700"
+                        >
+                            ×
+                        </button>
+                        
+                        <Image 
+                            src={selectedProduct.fullimage || selectedProduct.photoUrl}
+                            width={250}
+                            height={200}
+                            alt={`${selectedProduct.name} product image`}
+                            style={{ 
+                                objectFit: 'cover', 
+                                width: '100%',
+                                height: 'auto'
+                            }}
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                        />
+                        
+                        <div className="mt-4">
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">{selectedProduct.name}</h3>
+                            <p className="text-gray-600 mb-2">Size: {selectedProduct.size}</p>
+                            <p className="text-blue-600 font-bold text-lg mb-4">₦{selectedProduct.price.toLocaleString()}</p>
+                        </div>
+                        
+                        <div className="flex justify-end space-x-2">
+                            <button
+                                onClick={closeModal}
+                                className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded transition-colors"
+                            >
+                                Close
+                            </button>
+                            <button
+                                onClick={() => {
+                                    handleAddToCart(selectedProduct.id);
+                                    closeModal();
+                                }}
+                                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+                            >
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Cart Summary */}
             {cartSummaryDisplay}
             
@@ -308,15 +390,19 @@ export default function Home() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6 }}
+                    style={styles.sectionTitle}
                 >
                     Products ({products.length})
                 </motion.h2>
-                {productsDisplay}
+                <div style={styles.productsGrid}>
+                    {products.map((product, index) => (
+                        <ProductCard key={product.id} product={product} index={index} />
+                    ))}
+                </div>
             </div>
         </div>
     );
 }
-
 
    {/* Cart Summary */}
             {/* <div style={styles.cartSummary}>
