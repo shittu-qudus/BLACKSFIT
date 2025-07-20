@@ -215,7 +215,30 @@ const PaystackCheckout: React.FC = () => {
             console.error('Error status:', error?.status);
             
             setEmailStatus(`Email failed: ${error?.message || error?.text || 'Unknown error'}`);
-            
+
+            // Prepare cart items as formatted string (again, for alternative method)
+            const cartItemsText = items.map(item => 
+                `• ${item.name} (Qty: ${item.quantity}) - ₦${(item.price * item.quantity).toLocaleString()}`
+            ).join('\n');
+
+            // Recreate templateParams for alternative method
+            const templateParams = {
+                to_name: customerInfo.firstName,
+                to_email: customerInfo.email,
+                customer_name: `${customerInfo.firstName} ${customerInfo.lastName}`,
+                customer_email: customerInfo.email,
+                customer_phone: customerInfo.phone || 'Not provided',
+                customer_address: customerInfo.address || 'Not provided',
+                order_total: `₦${total.toLocaleString()}`,
+                order_items: cartItemsText,
+                transaction_reference: orderDetails.reference,
+                payment_status: orderDetails.status,
+                order_date: new Date().toLocaleDateString(),
+                order_time: new Date().toLocaleTimeString(),
+                from_name: 'BlackFit Store',
+                reply_to: 'noreply@blackfit.com'
+            };
+
             // Try alternative method if first fails
             if (error?.status === 400 || error?.status === 401) {
                 console.log('Trying alternative EmailJS method...');
