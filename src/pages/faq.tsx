@@ -264,10 +264,11 @@ const BlacksfitFAQ = () => {
           className="mt-20 text-center bg-white text-black rounded-2xl p-12"
         >
           <h3 className="text-3xl font-bold mb-4">Still have questions?</h3>
-          <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Can't find what you're looking for? Our customer service team is here to help. 
-            We respond to all inquiries within 24 hours.
-          </p>
+         <p className="text-lg mb-8 max-w-2xl mx-auto">
+  Can&apos;t find what you&apos;re looking for? Our customer service team is here to help. 
+  We respond to all inquiries within 24 hours.
+</p>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.button
               whileHover={{ scale: 1.05 }}

@@ -68,6 +68,7 @@ const styles = {
     },
     title: {
         fontSize: 'clamp(1.25rem, 4vw, 1.75rem)',
+        marginTop:"10px",
         margin: 0,
         color: '#fff',
         fontWeight: 'bold' as const

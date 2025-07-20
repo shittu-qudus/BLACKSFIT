@@ -16,13 +16,13 @@ export default function Header() {
     <>
       <header className="fixed top-0 left-0 w-full z-50 bg-black text-white px-4 py-3 flex justify-between items-center shadow-md">
         <div className="text-xl font-bold">
-          <Image
+         <Link href="/"> <Image
             alt="cover pic"
-            src="/image/logo.jpg"
-            height={20}
-            width={20}
+            src="/image/BLACKS.png"
+            height={50}
+            width={50}
             priority
-          />
+          /></Link>
         </div>
         
         {/* Desktop Navigation */}

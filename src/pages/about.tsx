@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Users, Heart, Target, Globe } from 'lucide-react';
+import Link from 'next/link';
 
 const BlacksfitAbout = () => {
     const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
@@ -293,9 +294,9 @@ const BlacksfitAbout = () => {
             <p className="text-xl mb-8 text-gray-300">
               Discover your strength. Celebrate your heritage. Transform your life.
             </p>
-            <button className="bg-gradient-to-r from-white to-gray-300 text-black px-8 py-4 rounded-full text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+           <Link href="/shop"> <button className="bg-gradient-to-r from-white to-gray-300 text-black px-8 py-4 rounded-full text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
               Start Your Journey
-            </button>
+            </button></Link>
             <div className="mt-8 text-sm text-gray-400">
               <em>Where African Excellence Meets Modern Fitness</em>
             </div>
