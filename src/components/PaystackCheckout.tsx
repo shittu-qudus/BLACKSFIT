@@ -76,7 +76,7 @@ const PaystackCheckout: React.FC = () => {
     const [emailStatus, setEmailStatus] = useState<string>(''); // Debug email status
 
     // IMPORTANT: Replace with your actual PUBLIC key (starts with pk_test_)
-    const PAYSTACK_PUBLIC_KEY = 'pk_test_c3b60cc948314aa02441a2c964e31a2238051185';
+    const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!;
     
     // EmailJS configuration - replace with your actual values
     const EMAILJS_SERVICE_ID = 'service_830xn5m';
