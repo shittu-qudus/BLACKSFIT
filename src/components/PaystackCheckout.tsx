@@ -78,10 +78,10 @@ const PaystackCheckout: React.FC = () => {
     // IMPORTANT: Replace with your actual PUBLIC key (starts with pk_test_)
     const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!;
     
-    // EmailJS configuration - replace with your actual values
-    const EMAILJS_SERVICE_ID = 'service_830xn5m';
-    const EMAILJS_TEMPLATE_ID = 'template_mazc7pm';
-    const EMAILJS_USER_ID = '58om_daVBcallUF97b';
+    // EmailJS configuration loaded from environment variables
+    const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
+    const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
+    const EMAILJS_USER_ID = process.env.NEXT_PUBLIC_EMAILJS_USER_ID!;
 
     // Initialize EmailJS
     useEffect(() => {
