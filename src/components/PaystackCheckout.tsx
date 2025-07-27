@@ -343,15 +343,26 @@ const PaystackCheckout: React.FC = () => {
                 phone: customerDetails.phone.trim() || '',
                 metadata: {
                     custom_fields: [
-                        {
-                            display_name: "Address",
-                            variable_name: "address",
-                            value: customerDetails.address.trim() || 'Not provided'
-                        },
+                    {
+                        display_name: "Address",
+                        variable_name: "address",
+                        value: customerDetails.address.trim() || 'Not provided'
+                    },
+                    {
+                        display_name: "Phone",
+                        variable_name: "phone",
+                        value: customerDetails.phone.trim() || 'Not provided'
+                    },
+                    {
+                        display_name: "Email",
+                        variable_name: "email",
+                        value: customerDetails.email.trim() || 'Not provided'
+                    },
                         {
                             display_name: "Cart Items",
                             variable_name: "cart_items",
-                            value: JSON.stringify(cartItems)
+                            // numbered list of item names
+                            value: cartItems.map((item, idx) => `${idx + 1}. ${item.name} (Qty: ${item.quantity})`).join('\n')
                         },
                         {
                             display_name: "Order Total",
