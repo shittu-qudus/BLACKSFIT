@@ -208,19 +208,19 @@ const BlacksfitContact = () => {
     {
       icon: <Phone className="w-6 h-6" />,
       title: 'Call Us',
-      details: ['+234 (0) 703 283 5482', '+234 (0) 901 000 000'],
+      details: ['+234 (0) 703 283 5482', '+234 (0) 906 679 2142'],
       description: 'Available 24/7 for emergencies',
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: 'Email Us',
-      details: ['info@blacksfit.ng', 'support@blacksfit.ng'],
+      details: ['Blacksfit08@gmal.com', 'Ajalafuad127@gmail.com'],
       description: 'We respond within 2 hours',
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Visit Us',
-      details: ['Lagos: Victoria Island'],
+      details: ['Ogun: mowe'],
       description: 'Multiple locations across Nigeria',
     },
     {
@@ -570,9 +570,9 @@ const BlacksfitContact = () => {
               <div className="bg-gradient-to-r from-black to-gray-800 text-white p-8">
                 <div className="grid md:grid justify-center gap-8">
                   <div style={{}}>
-                    <h3 className="text-2xl font-bold mb-4">Lagos Location</h3>
-                    <p className="text-gray-300 mb-2">123 Fitness Avenue</p>
-                    <p className="text-gray-300 mb-2">Victoria Island, Lagos</p>
+                    <h3 className="text-2xl font-bold mb-4">Ogun Location</h3>
+                    <p className="text-gray-300 mb-2">9 idahosa Street,Igbobi</p>
+                    <p className="text-gray-300 mb-2">Mowe,Ogun State</p>
                     <p className="text-gray-300">Nigeria</p>
                   </div>
                  
