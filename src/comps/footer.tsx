@@ -143,7 +143,7 @@ const Footer = () => {
               <div className="flex items-center space-x-3">
                 <FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-400" />
                 <span className="text-gray-400 text-sm">
-                  123 Fashion Street, Lagos, Nigeria
+                 9 idahosa street, igbobi, mowe ogun state
                 </span>
               </div>
               <div className="flex items-center space-x-3">
@@ -152,7 +152,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <FontAwesomeIcon icon={faEnvelope} className="text-gray-400" />
-                <span className="text-gray-400 text-sm">support@blackfits.com</span>
+                <span className="text-gray-400 text-sm">Blacksfit08@gmail.com</span>
               </div>
             </div>
 

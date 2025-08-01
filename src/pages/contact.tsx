@@ -264,7 +264,7 @@ const BlacksfitContact = () => {
             <div className="w-24 h-1 bg-white mx-auto mb-8" />
           
 <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto">
-  Ready to transform your fitness journey? Let&apos;s connect and build something amazing together.
+  Ready to transform your fashion journey? Let&apos;s connect and build something amazing together.
 </p>
 
           </div>
@@ -326,7 +326,7 @@ const BlacksfitContact = () => {
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Send Us A Message</h2>
             <div className="w-24 h-1 bg-white mx-auto mb-8" />
-           <p className="text-xl text-gray-300">Let&apos;s discuss how we can help you achieve your fitness goals</p>
+           <p className="text-xl text-gray-300">Let&apos;s discuss how we can help you achieve your steeze goals</p>
           </div>
 
           <div
@@ -470,7 +470,7 @@ const BlacksfitContact = () => {
                       onBlur={handleBlur}
                       rows={5}
                       className={`bg-gray-900 border ${errors.message ? 'border-red-500' : 'border-gray-700'} text-white text-sm rounded-lg focus:ring-white focus:border-white block w-full p-2.5 pl-10`}
-                      placeholder="Tell us about your fitness goals..."
+                      placeholder="Tell us about your steeze goals..."
                       required
                     />
                   </div>

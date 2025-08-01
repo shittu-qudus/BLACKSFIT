@@ -519,6 +519,7 @@ const Home = () => {
                     name="description" 
                     content="Blacksfit: Premium Nigerian streetwear brand. Shop our Lagos-inspired urban fashion collection - high-quality, limited edition pieces for men and women. Free shipping in Nigeria." 
                 />
+                 <link rel="icon" href="/fav.ico"  />
                 <meta name="keywords" content="nigerian streetwear, lagos fashion, blacksfit clothing, african urban wear, premium streetwear, nigerian clothing brand, lagos street fashion, african designer clothes" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta property="og:title" content="Blacksfit | Premium Nigerian Streetwear & Urban Fashion" />
@@ -535,7 +536,7 @@ const Home = () => {
                 <link rel="alternate" hrefLang="en-ng" href="https://blacksfit-test.vercel.app" />
                 
                 <meta name="geo.region" content="NG-LA" />
-                <meta name="geo.placename" content="Lagos" />
+                <meta name="geo.placename" content="Ogun state" />
                 <meta name="geo.position" content="6.524379;3.379206" />
                 <meta name="ICBM" content="6.524379, 3.379206" />
                 
@@ -559,18 +560,18 @@ const Home = () => {
                         "@type": "Organization",
                         "name": "Blacksfit",
                         "url": "https://blacksfit-test.vercel.app",
-                        "logo": "https://blacksfit-test.vercel.app/logo.png",
+                        "logo": "https://blacksfit-test.vercel.app/BLACKS.png",
                         "sameAs": [
-                            "https://www.instagram.com/blacksfit",
-                            "https://www.facebook.com/blacksfit",
-                            "https://twitter.com/blacksfit"
+                            "https://www.instagram.com/blacks_fit?igsh=bmhza3FyeWYxb3M2&utm_source=qr",
+                            "https://www.tiktok.com/@blacksfitt08?_t=ZM-8xWIqa0KHn3&_r=1",
+                            "https://x.com/blacksfit08?s=21"
                         ],
                         "address": {
                             "@type": "PostalAddress",
-                            "streetAddress": "123 Fashion Street",
-                            "addressLocality": "Lagos",
-                            "addressRegion": "LA",
-                            "postalCode": "101233",
+                            "streetAddress": "9 IDAHOSA ",
+                            "addressLocality": " MOWE OGUN",
+                            "addressRegion": "OG",
+                            "postalCode": "110113",
                             "addressCountry": "NG"
                         }
                     })}

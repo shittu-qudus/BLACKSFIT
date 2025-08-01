@@ -29,6 +29,7 @@ interface CustomerDetails {
     lastName: string;
     phone: string;
     address: string;
+    size: string; 
 }
 
 // Define Paystack types
@@ -66,7 +67,8 @@ const PaystackCheckout: React.FC = () => {
         firstName: '',
         lastName: '',
         phone: '',
-        address: ''
+        address: '',
+          size: '',
     });
     
     const [isProcessing, setIsProcessing] = useState(false);
@@ -405,7 +407,8 @@ const PaystackCheckout: React.FC = () => {
                                     firstName: '',
                                     lastName: '',
                                     phone: '',
-                                    address: ''
+                                    address: '',
+                                      size: '',
                                 });
                             } else {
                                 console.log('Payment status not success:', response.status);
@@ -675,7 +678,25 @@ const PaystackCheckout: React.FC = () => {
                                     }}
                                 />
                             </div>
-                            
+                                 <div>
+                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                                    Preferred Size
+                                </label>
+                                <input
+                                    type="text"
+                                    name="size"
+                                    value={customerDetails.size}
+                                    onChange={handleInputChange}
+                                    style={{ 
+                                        width: '100%', 
+                                        padding: '10px', 
+                                        border: '1px solid #ddd', 
+                                        borderRadius: '3px',
+                                        fontSize: '14px'
+                                    }}
+                                    placeholder="Enter your preferred size"
+                                />
+                            </div>
                             <div>
                                 <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
                                     Delivery Address

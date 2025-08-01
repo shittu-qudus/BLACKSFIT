@@ -253,6 +253,7 @@ interface Product {
   price: number;
   photoUrl: string;
   fullimage?: string;
+description?: string; 
 }
 
 interface ProductCardProps {
@@ -385,6 +386,12 @@ const Shop = () => {
   const [modal, setModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  // Scroll position states
+  const [isAtProductsStart, setIsAtProductsStart] = useState(true);
+  const [isAtProductsEnd, setIsAtProductsEnd] = useState(false);
+  const [isAtSuggestedStart, setIsAtSuggestedStart] = useState(true);
+  const [isAtSuggestedEnd, setIsAtSuggestedEnd] = useState(false);
+
   // Extract some products for the shop
   const shopProducts = useMemo(() => productData.slice(0, 6), []);
   const suggestedProducts = useMemo(() => productData.slice(6, 12), []);
@@ -425,13 +432,11 @@ const Shop = () => {
     return cartItemsMap.has(productId);
   }, [cartItemsMap]);
 
-  // Improved scroll handlers
+  // Scroll handlers with fixed scroll amounts
   const handleScrollLeftProducts = useCallback(() => {
     if (productsContainerRef.current) {
-      const container = productsContainerRef.current;
-      const scrollAmount = container.clientWidth * 0.8;
-      container.scrollBy({
-        left: -scrollAmount,
+      productsContainerRef.current.scrollBy({
+        left: -300,
         behavior: 'smooth'
       });
     }
@@ -439,10 +444,8 @@ const Shop = () => {
 
   const handleScrollRightProducts = useCallback(() => {
     if (productsContainerRef.current) {
-      const container = productsContainerRef.current;
-      const scrollAmount = container.clientWidth * 0.8;
-      container.scrollBy({
-        left: scrollAmount,
+      productsContainerRef.current.scrollBy({
+        left: 300,
         behavior: 'smooth'
       });
     }
@@ -450,10 +453,8 @@ const Shop = () => {
 
   const handleScrollLeftSuggested = useCallback(() => {
     if (suggestedContainerRef.current) {
-      const container = suggestedContainerRef.current;
-      const scrollAmount = container.clientWidth * 0.8;
-      container.scrollBy({
-        left: -scrollAmount,
+      suggestedContainerRef.current.scrollBy({
+        left: -300,
         behavior: 'smooth'
       });
     }
@@ -461,10 +462,8 @@ const Shop = () => {
 
   const handleScrollRightSuggested = useCallback(() => {
     if (suggestedContainerRef.current) {
-      const container = suggestedContainerRef.current;
-      const scrollAmount = container.clientWidth * 0.8;
-      container.scrollBy({
-        left: scrollAmount,
+      suggestedContainerRef.current.scrollBy({
+        left: 300,
         behavior: 'smooth'
       });
     }
@@ -500,6 +499,40 @@ const Shop = () => {
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
+    };
+  }, []);
+
+  // Add scroll event listeners
+  useEffect(() => {
+    const productsContainer = productsContainerRef.current;
+    const suggestedContainer = suggestedContainerRef.current;
+
+    const handleProductsScroll = () => {
+      if (productsContainer) {
+        const { scrollLeft, scrollWidth, clientWidth } = productsContainer;
+        setIsAtProductsStart(scrollLeft <= 0);
+        setIsAtProductsEnd(scrollLeft + clientWidth >= scrollWidth - 1);
+      }
+    };
+
+    const handleSuggestedScroll = () => {
+      if (suggestedContainer) {
+        const { scrollLeft, scrollWidth, clientWidth } = suggestedContainer;
+        setIsAtSuggestedStart(scrollLeft <= 0);
+        setIsAtSuggestedEnd(scrollLeft + clientWidth >= scrollWidth - 1);
+      }
+    };
+
+    productsContainer?.addEventListener('scroll', handleProductsScroll);
+    suggestedContainer?.addEventListener('scroll', handleSuggestedScroll);
+
+    // Initial check
+    handleProductsScroll();
+    handleSuggestedScroll();
+
+    return () => {
+      productsContainer?.removeEventListener('scroll', handleProductsScroll);
+      suggestedContainer?.removeEventListener('scroll', handleSuggestedScroll);
     };
   }, []);
 
@@ -555,39 +588,11 @@ const Shop = () => {
       closeModal();
     }
   }, [selectedProduct, handleAddToCart, closeModal]);
-
-  // Check if scroll buttons should be disabled
-  const isProductsAtStart = useCallback(() => {
-    if (!productsContainerRef.current) return true;
-    return productsContainerRef.current.scrollLeft <= 0;
-  }, []);
-
-  const isProductsAtEnd = useCallback(() => {
-    if (!productsContainerRef.current) return true;
-    return (
-      productsContainerRef.current.scrollLeft + productsContainerRef.current.clientWidth >=
-      productsContainerRef.current.scrollWidth - 1
-    );
-  }, []);
-
-  const isSuggestedAtStart = useCallback(() => {
-    if (!suggestedContainerRef.current) return true;
-    return suggestedContainerRef.current.scrollLeft <= 0;
-  }, []);
-
-  const isSuggestedAtEnd = useCallback(() => {
-    if (!suggestedContainerRef.current) return true;
-    return (
-      suggestedContainerRef.current.scrollLeft + suggestedContainerRef.current.clientWidth >=
-      suggestedContainerRef.current.scrollWidth - 1
-    );
-  }, []);
-
-  return (
+ return (
     <>
       <br />
       <div style={styles.container}>
-        {/* Hero Section */}
+        {/* Hero Section - keep exactly the same */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -602,60 +607,76 @@ const Shop = () => {
           </p>
         </motion.div>
 
-        {/* Modal */}
+        {/* Modal - this is the only part we're changing */}
         {modal && selectedProduct && (
           <div
-            style={styles.modal}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
             onClick={handleBackdropClick}
-            onKeyDown={handleModalKeyDown}
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
           >
-            <div style={styles.modalContent}>
+            <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 relative">
               <button
                 onClick={closeModal}
-                style={styles.modalCloseButton}
-                aria-label="Close modal"
+                className="text-red-500 text-2xl absolute top-2 right-2 hover:text-red-700"
+                aria-label="Close product details"
               >
                 ×
               </button>
               
-              <Image 
-                src={selectedProduct.fullimage || selectedProduct.photoUrl}
-                width={500}
-                height={400}
-                alt={`${selectedProduct.name} product image`}
-                style={styles.modalImage}
-                placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-              />
-              
-              <div style={styles.modalInfo}>
-                <h3 id="modal-title" style={styles.modalTitle}>{selectedProduct.name}</h3>
-                <p style={styles.modalSize}>Size: {selectedProduct.size}</p>
-                <p style={styles.modalPrice}>₦{selectedProduct.price.toLocaleString()}</p>
-              </div>
-              
-              <div style={styles.modalButtonContainer}>
-                <button
-                  onClick={closeModal}
-                  style={{...styles.modalButton, ...styles.modalCloseBtn}}
-                >
-                  Close
-                </button>
-                <button
-                  onClick={handleAddToCartFromModal}
-                  style={{...styles.modalButton, ...styles.modalAddBtn}}
-                >
-                  Add to Cart
-                </button>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="md:w-1/2">
+                  <Image 
+                    src={selectedProduct.fullimage || selectedProduct.photoUrl}
+                    width={500}
+                    height={400}
+                    alt={`Detailed view of ${selectedProduct.name}`}
+                    className="w-full h-auto rounded-lg"
+                    style={{ objectFit: 'cover' }}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                  />
+                </div>
+                
+                <div className="md:w-1/2">
+                  <div className="mt-0 md:mt-4">
+                    <h1 id="modal-title" className="text-xl font-bold text-gray-800 mb-2">
+                      {selectedProduct.name}
+                    </h1>
+                    <p className="text-gray-600 mb-2">Size: {selectedProduct.size}</p>
+                    <p className="text-blue-600 font-bold text-lg mb-4">
+                      ₦{selectedProduct.price.toLocaleString()}
+                    </p>
+                    {selectedProduct.description && (
+                      <p className="text-gray-700 mb-4">{selectedProduct.description}</p>
+                    )}
+                    <p className="text-gray-700 mb-4">
+                      This premium product is part of our exclusive collection.
+                    </p>
+                  </div>
+                  
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <button
+                      onClick={closeModal}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded transition-colors"
+                    >
+                      Close
+                    </button>
+                    <button
+                      onClick={handleAddToCartFromModal}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Main Products Section */}
+        {/* Main Products Section - keep exactly the same */}
         <div style={styles.productsSection}>
           <motion.h2 
             initial={{ opacity: 0, x: -20 }}
@@ -695,10 +716,10 @@ const Shop = () => {
               onClick={handleScrollLeftProducts}
               style={{
                 ...styles.scrollButton,
-                ...(isProductsAtStart() && styles.scrollButtonDisabled)
+                ...(isAtProductsStart && styles.scrollButtonDisabled)
               }}
               aria-label="Scroll left"
-              disabled={isProductsAtStart()}
+              disabled={isAtProductsStart}
             >
               <span style={styles.scrollIcon}>←</span>
             </button>
@@ -706,17 +727,17 @@ const Shop = () => {
               onClick={handleScrollRightProducts}
               style={{
                 ...styles.scrollButton,
-                ...(isProductsAtEnd() && styles.scrollButtonDisabled)
+                ...(isAtProductsEnd && styles.scrollButtonDisabled)
               }}
               aria-label="Scroll right"
-              disabled={isProductsAtEnd()}
+              disabled={isAtProductsEnd}
             >
               <span style={styles.scrollIcon}>→</span>
             </button>
           </div>
         </div>
 
-        {/* Suggested Products Section */}
+        {/* Suggested Products Section - keep exactly the same */}
         {suggestedProducts.length > 0 && (
           <div style={styles.productsSection}>
             <motion.h2 
@@ -757,10 +778,10 @@ const Shop = () => {
                 onClick={handleScrollLeftSuggested}
                 style={{
                   ...styles.scrollButton,
-                  ...(isSuggestedAtStart() && styles.scrollButtonDisabled)
+                  ...(isAtSuggestedStart && styles.scrollButtonDisabled)
                 }}
                 aria-label="Scroll left"
-                disabled={isSuggestedAtStart()}
+                disabled={isAtSuggestedStart}
               >
                 <span style={styles.scrollIcon}>←</span>
               </button>
@@ -768,10 +789,10 @@ const Shop = () => {
                 onClick={handleScrollRightSuggested}
                 style={{
                   ...styles.scrollButton,
-                  ...(isSuggestedAtEnd() && styles.scrollButtonDisabled)
+                  ...(isAtSuggestedEnd && styles.scrollButtonDisabled)
                 }}
                 aria-label="Scroll right"
-                disabled={isSuggestedAtEnd()}
+                disabled={isAtSuggestedEnd}
               >
                 <span style={styles.scrollIcon}>→</span>
               </button>
