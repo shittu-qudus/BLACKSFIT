@@ -253,7 +253,7 @@ interface Product {
   price: number;
   photoUrl: string;
   fullimage?: string;
-description?: string; 
+  description?: string; 
 }
 
 interface ProductCardProps {
@@ -432,11 +432,13 @@ const Shop = () => {
     return cartItemsMap.has(productId);
   }, [cartItemsMap]);
 
-  // Scroll handlers with fixed scroll amounts
+  // Updated scroll handlers with consistent behavior
   const handleScrollLeftProducts = useCallback(() => {
     if (productsContainerRef.current) {
-      productsContainerRef.current.scrollBy({
-        left: -300,
+      const container = productsContainerRef.current;
+      const scrollAmount = Math.min(300, container.scrollLeft);
+      container.scrollTo({
+        left: container.scrollLeft - scrollAmount,
         behavior: 'smooth'
       });
     }
@@ -444,8 +446,13 @@ const Shop = () => {
 
   const handleScrollRightProducts = useCallback(() => {
     if (productsContainerRef.current) {
-      productsContainerRef.current.scrollBy({
-        left: 300,
+      const container = productsContainerRef.current;
+      const scrollAmount = Math.min(
+        300, 
+        container.scrollWidth - container.clientWidth - container.scrollLeft
+      );
+      container.scrollTo({
+        left: container.scrollLeft + scrollAmount,
         behavior: 'smooth'
       });
     }
@@ -453,8 +460,10 @@ const Shop = () => {
 
   const handleScrollLeftSuggested = useCallback(() => {
     if (suggestedContainerRef.current) {
-      suggestedContainerRef.current.scrollBy({
-        left: -300,
+      const container = suggestedContainerRef.current;
+      const scrollAmount = Math.min(300, container.scrollLeft);
+      container.scrollTo({
+        left: container.scrollLeft - scrollAmount,
         behavior: 'smooth'
       });
     }
@@ -462,8 +471,13 @@ const Shop = () => {
 
   const handleScrollRightSuggested = useCallback(() => {
     if (suggestedContainerRef.current) {
-      suggestedContainerRef.current.scrollBy({
-        left: 300,
+      const container = suggestedContainerRef.current;
+      const scrollAmount = Math.min(
+        300, 
+        container.scrollWidth - container.clientWidth - container.scrollLeft
+      );
+      container.scrollTo({
+        left: container.scrollLeft + scrollAmount,
         behavior: 'smooth'
       });
     }
@@ -502,29 +516,35 @@ const Shop = () => {
     };
   }, []);
 
-  // Add scroll event listeners
+  // Add scroll event listeners and resize handler
   useEffect(() => {
     const productsContainer = productsContainerRef.current;
     const suggestedContainer = suggestedContainerRef.current;
 
-    const handleProductsScroll = () => {
-      if (productsContainer) {
-        const { scrollLeft, scrollWidth, clientWidth } = productsContainer;
-        setIsAtProductsStart(scrollLeft <= 0);
-        setIsAtProductsEnd(scrollLeft + clientWidth >= scrollWidth - 1);
+    const handleScroll = (container: HTMLDivElement | null, setIsAtStart: React.Dispatch<React.SetStateAction<boolean>>, setIsAtEnd: React.Dispatch<React.SetStateAction<boolean>>) => {
+      if (container) {
+        const { scrollLeft, scrollWidth, clientWidth } = container;
+        setIsAtStart(scrollLeft <= 10);
+        setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10);
       }
     };
 
+    const handleProductsScroll = () => {
+      handleScroll(productsContainer, setIsAtProductsStart, setIsAtProductsEnd);
+    };
+
     const handleSuggestedScroll = () => {
-      if (suggestedContainer) {
-        const { scrollLeft, scrollWidth, clientWidth } = suggestedContainer;
-        setIsAtSuggestedStart(scrollLeft <= 0);
-        setIsAtSuggestedEnd(scrollLeft + clientWidth >= scrollWidth - 1);
-      }
+      handleScroll(suggestedContainer, setIsAtSuggestedStart, setIsAtSuggestedEnd);
+    };
+
+    const handleResize = () => {
+      handleProductsScroll();
+      handleSuggestedScroll();
     };
 
     productsContainer?.addEventListener('scroll', handleProductsScroll);
     suggestedContainer?.addEventListener('scroll', handleSuggestedScroll);
+    window.addEventListener('resize', handleResize);
 
     // Initial check
     handleProductsScroll();
@@ -533,6 +553,7 @@ const Shop = () => {
     return () => {
       productsContainer?.removeEventListener('scroll', handleProductsScroll);
       suggestedContainer?.removeEventListener('scroll', handleSuggestedScroll);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -588,11 +609,12 @@ const Shop = () => {
       closeModal();
     }
   }, [selectedProduct, handleAddToCart, closeModal]);
- return (
+
+  return (
     <>
       <br />
       <div style={styles.container}>
-        {/* Hero Section - keep exactly the same */}
+        {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -607,7 +629,7 @@ const Shop = () => {
           </p>
         </motion.div>
 
-        {/* Modal - this is the only part we're changing */}
+        {/* Modal */}
         {modal && selectedProduct && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
@@ -676,7 +698,7 @@ const Shop = () => {
           </div>
         )}
 
-        {/* Main Products Section - keep exactly the same */}
+        {/* Main Products Section */}
         <div style={styles.productsSection}>
           <motion.h2 
             initial={{ opacity: 0, x: -20 }}
@@ -737,7 +759,7 @@ const Shop = () => {
           </div>
         </div>
 
-        {/* Suggested Products Section - keep exactly the same */}
+        {/* Suggested Products Section */}
         {suggestedProducts.length > 0 && (
           <div style={styles.productsSection}>
             <motion.h2 

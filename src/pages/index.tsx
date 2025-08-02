@@ -67,7 +67,8 @@ const styles: Styles = {
         WebkitOverflowScrolling: 'touch',
         msOverflowStyle: 'none',
         scrollbarWidth: 'none',
-        position: 'relative'
+        position: 'relative',
+        scrollBehavior: 'smooth'
     },
     productsGrid: {
         display: 'flex',
@@ -172,6 +173,10 @@ const styles: Styles = {
         cursor: 'pointer',
         transition: 'all 0.2s ease'
     },
+    scrollButtonDisabled: {
+        opacity: 0.5,
+        cursor: 'not-allowed'
+    },
     scrollIcon: {
         fontSize: '1.2rem'
     },
@@ -188,18 +193,6 @@ const styles: Styles = {
     breadcrumbSeparator: {
         margin: '0 5px',
         color: '#666'
-    },
-    aboutSection: {
-        padding: '2rem',
-        backgroundColor: '#111',
-        margin: '2rem',
-        borderRadius: '10px'
-    },
-    shippingInfo: {
-        padding: '2rem',
-        backgroundColor: '#111',
-        margin: '2rem',
-        borderRadius: '10px'
     }
 };
 
@@ -255,14 +248,16 @@ const generateProductSchema = (product: any) => ({
     }
 });
 
-const Home = () => {
+const HomePage = () => {
     const dispatch = useAppDispatch();
     const products = useAppSelector(state => state.products.products);
     const cartItems = useAppSelector(state => state.cart.items);
     const cartTotal = useAppSelector(state => state.cart.total);
     const productsContainerRef = useRef<HTMLDivElement>(null);
-    const scrollAnimationRef = useRef<number | null>(null);
+    const [isAtStart, setIsAtStart] = useState(true);
+    const [isAtEnd, setIsAtEnd] = useState(false);
     const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [modal, setModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
@@ -272,17 +267,92 @@ const Home = () => {
         }
     }, [dispatch, products.length]);
 
-    const startAutoScroll = useCallback(() => {
-        if (!isAutoScrolling || !productsContainerRef.current) return;
+    const handleScrollLeft = useCallback(() => {
+        if (productsContainerRef.current) {
+            setIsAutoScrolling(false);
+            const container = productsContainerRef.current;
+            const cardWidth = 280 + 24; // card width + gap
+            const scrollAmount = Math.min(cardWidth * 2, container.scrollLeft);
+            
+            container.scrollTo({
+                left: container.scrollLeft - scrollAmount,
+                behavior: 'smooth'
+            });
 
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+            
+            scrollTimeoutRef.current = setTimeout(() => {
+                setIsAutoScrolling(true);
+            }, 8000);
+        }
+    }, []);
+
+    const handleScrollRight = useCallback(() => {
+        if (productsContainerRef.current) {
+            setIsAutoScrolling(false);
+            const container = productsContainerRef.current;
+            const cardWidth = 280 + 24; // card width + gap
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            const scrollAmount = Math.min(
+                cardWidth * 2,
+                maxScroll - container.scrollLeft
+            );
+            
+            container.scrollTo({
+                left: container.scrollLeft + scrollAmount,
+                behavior: 'smooth'
+            });
+
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+            
+            scrollTimeoutRef.current = setTimeout(() => {
+                setIsAutoScrolling(true);
+            }, 8000);
+        }
+    }, []);
+
+    useEffect(() => {
         const container = productsContainerRef.current;
+        if (!container) return;
+
+        const handleScroll = () => {
+            const { scrollLeft, scrollWidth, clientWidth } = container;
+            setIsAtStart(scrollLeft <= 10);
+            setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10);
+        };
+
+        container.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleScroll);
+        
+        handleScroll();
+
+        return () => {
+            container.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleScroll);
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!isAutoScrolling) return;
+        
+        const container = productsContainerRef.current;
+        if (!container) return;
+
         let scrollPosition = container.scrollLeft;
         let direction = 1;
-        const scrollSpeed = 0.15;
+        const scrollSpeed = 0.5;
+        let animationFrameId: number;
 
-        const animate = () => {
-            if (!container) return;
-
+        const autoScroll = () => {
+            if (!isAutoScrolling || !container) return;
+            
             scrollPosition += scrollSpeed * direction;
             container.scrollLeft = scrollPosition;
 
@@ -293,57 +363,15 @@ const Home = () => {
                 direction = 1;
             }
 
-            scrollAnimationRef.current = requestAnimationFrame(animate);
+            animationFrameId = requestAnimationFrame(autoScroll);
         };
 
-        scrollAnimationRef.current = requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(autoScroll);
 
         return () => {
-            if (scrollAnimationRef.current) {
-                cancelAnimationFrame(scrollAnimationRef.current);
-            }
+            cancelAnimationFrame(animationFrameId);
         };
     }, [isAutoScrolling]);
-
-    useEffect(() => {
-        const cleanup = startAutoScroll();
-        return cleanup;
-    }, [startAutoScroll]);
-
-    const scrollLeft = useCallback(() => {
-        setIsAutoScrolling(false);
-        if (productsContainerRef.current) {
-            productsContainerRef.current.scrollBy({
-                left: -300,
-                behavior: 'smooth'
-            });
-        }
-        const timer = setTimeout(() => setIsAutoScrolling(true), 8000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    const scrollRight = useCallback(() => {
-        setIsAutoScrolling(false);
-        if (productsContainerRef.current) {
-            productsContainerRef.current.scrollBy({
-                left: 300,
-                behavior: 'smooth'
-            });
-        }
-        const timer = setTimeout(() => setIsAutoScrolling(true), 8000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    const handleMouseEnter = useCallback(() => {
-        setIsAutoScrolling(false);
-        if (scrollAnimationRef.current) {
-            cancelAnimationFrame(scrollAnimationRef.current);
-        }
-    }, []);
-
-    const handleMouseLeave = useCallback(() => {
-        setIsAutoScrolling(true);
-    }, []);
 
     const openModal = useCallback((product: any) => {
         setSelectedProduct(product);
@@ -519,7 +547,7 @@ const Home = () => {
                     name="description" 
                     content="Blacksfit: Premium Nigerian streetwear brand. Shop our Lagos-inspired urban fashion collection - high-quality, limited edition pieces for men and women. Free shipping in Nigeria." 
                 />
-                 <link rel="icon" href="/fav.ico"  />
+                <link rel="icon" href="/fav.ico" />
                 <meta name="keywords" content="nigerian streetwear, lagos fashion, blacksfit clothing, african urban wear, premium streetwear, nigerian clothing brand, lagos street fashion, african designer clothes" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta property="og:title" content="Blacksfit | Premium Nigerian Streetwear & Urban Fashion" />
@@ -698,21 +726,21 @@ const Home = () => {
 
                 {cartSummaryDisplay}
                 
-                <main style={styles.productsSection}>
-                    <motion.h1 
+                <main  style={styles.productsSection}>
+                    <motion.h1 className="sm:text-2xl text-xl font-bold"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
                         style={styles.sectionTitle}
                     >
-                        Our Latest Collection ({products.length} Items)
+                       <span className="sm:text-sm text-xl font-bold"> Our Latest Collection ({products.length})</span>
                     </motion.h1>
                     
                     <section 
                         style={styles.productsGridContainer} 
                         ref={productsContainerRef}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
+                        onMouseEnter={() => setIsAutoScrolling(false)}
+                        onMouseLeave={() => setIsAutoScrolling(true)}
                         aria-label="Product carousel"
                     >
                         <div style={styles.productsGrid} role="list">
@@ -724,25 +752,32 @@ const Home = () => {
 
                     <div style={styles.scrollButtonsContainer}>
                         <button 
-                            onClick={scrollLeft}
-                            style={styles.scrollButton}
+                            onClick={handleScrollLeft}
+                            style={{
+                                ...styles.scrollButton,
+                                ...(isAtStart && styles.scrollButtonDisabled)
+                            }}
                             aria-label="Scroll products left"
+                            disabled={isAtStart}
                         >
                             <span style={styles.scrollIcon}>←</span>
                         </button>
                         <button 
-                            onClick={scrollRight}
-                            style={styles.scrollButton}
+                            onClick={handleScrollRight}
+                            style={{
+                                ...styles.scrollButton,
+                                ...(isAtEnd && styles.scrollButtonDisabled)
+                            }}
                             aria-label="Scroll products right"
+                            disabled={isAtEnd}
                         >
                             <span style={styles.scrollIcon}>→</span>
                         </button>
                     </div>
                 </main>
-
             </div>
         </>
     );
 };
 
-export default Home;
+export default HomePage;
