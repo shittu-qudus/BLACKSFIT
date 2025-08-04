@@ -143,7 +143,7 @@ const Footer = () => {
               <div className="flex items-center space-x-3">
                 <FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-400" />
                 <span className="text-gray-400 text-sm">
-                 9 idahosa street, igbobi, mowe ogun state
+                mowe ogun state
                 </span>
               </div>
               <div className="flex items-center space-x-3">
@@ -181,15 +181,15 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <FontAwesomeIcon icon={faShippingFast} className="text-white text-xl" />
               <div>
-                <h6 className="text-sm font-semibold text-white">Free Shipping</h6>
-                <p className="text-xs text-gray-400">On orders over ₦50,000</p>
+                <h6 className="text-sm font-semibold text-white">Get your order fast with our speedy shipping options!</h6>
+                {/* <p className="text-xs text-gray-400">On orders over ₦50,000</p> */}
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <FontAwesomeIcon icon={faUndo} className="text-white text-xl" />
               <div>
                 <h6 className="text-sm font-semibold text-white">Easy Returns</h6>
-                <p className="text-xs text-gray-400">30-day return policy</p>
+                <p className="text-xs text-gray-400">3-7day return policy</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">

@@ -208,25 +208,25 @@ const BlacksfitContact = () => {
     {
       icon: <Phone className="w-6 h-6" />,
       title: 'Call Us',
-      details: ['+234 (0) 703 283 5482', '+234 (0) 906 679 2142'],
+      details: ['+234 (0) 703 283 5482'],
       description: 'Available 24/7 for emergencies',
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: 'Email Us',
-      details: ['Blacksfit08@gmal.com', 'Ajalafuad127@gmail.com'],
+      details: ['Blacksfit08@gmail.com'],
       description: 'We respond within 2 hours',
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Visit Us',
       details: ['Ogun: mowe'],
-      description: 'Multiple locations across Nigeria',
+      description: 'locations across Nigeria',
     },
     {
       icon: <Clock className="w-6 h-6" />,
       title: 'Operating Hours',
-      details: ['Mon - Fri: 5:00 AM - 11:00 PM', 'Sat - Sun: 6:00 AM - 10:00 PM'],
+      details: ['Mon - Sun: 5:00 AM - 11:00 PM'],
       
     },
   ];
@@ -571,7 +571,7 @@ const BlacksfitContact = () => {
                 <div className="grid md:grid justify-center gap-8">
                   <div style={{}}>
                     <h3 className="text-2xl font-bold mb-4">Ogun Location</h3>
-                    <p className="text-gray-300 mb-2">9 idahosa Street,Igbobi</p>
+                    <p className="text-gray-300 mb-2">Igbobi</p>
                     <p className="text-gray-300 mb-2">Mowe,Ogun State</p>
                     <p className="text-gray-300">Nigeria</p>
                   </div>

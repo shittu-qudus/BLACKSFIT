@@ -132,27 +132,40 @@ const styles: Styles = {
     display: 'flex',
     justifyContent: 'center',
     gap: '1rem',
-    marginTop: '1rem'
+    marginTop: '1.5rem',
+    padding: '0 1rem'
   },
   scrollButton: {
-    background: '#333',
+    background: 'rgba(255, 255, 255, 0.1)',
     color: 'white',
-    border: 'none',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
     borderRadius: '50%',
-    width: '40px',
-    height: '40px',
+    width: '44px',
+    height: '44px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
-    transition: 'all 0.2s ease'
+    transition: 'all 0.3s ease',
+    backdropFilter: 'blur(8px)',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+  },
+  scrollButtonHover: {
+    background: 'rgba(255, 255, 255, 0.2)',
+    transform: 'scale(1.05)'
+  },
+  scrollButtonActive: {
+    transform: 'scale(0.95)'
   },
   scrollButtonDisabled: {
-    opacity: 0.5,
-    cursor: 'not-allowed'
+    opacity: 0.3,
+    cursor: 'not-allowed',
+    transform: 'none !important'
   },
   scrollIcon: {
-    fontSize: '1.2rem'
+    fontSize: '1.25rem',
+    fontWeight: 'bold',
+    transition: 'all 0.2s ease'
   },
   modal: {
     position: 'fixed',
@@ -371,6 +384,47 @@ const ProductCard: React.FC<ProductCardProps> = React.memo(({
 });
 
 ProductCard.displayName = 'ProductCard';
+
+const ScrollButton = ({
+  direction,
+  onClick,
+  disabled
+}: {
+  direction: 'left' | 'right';
+  onClick: () => void;
+  disabled: boolean;
+}) => {
+  return (
+    <motion.button
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        ...styles.scrollButton,
+        ...(disabled && styles.scrollButtonDisabled)
+      }}
+      whileHover={!disabled ? {
+        background: 'rgba(255, 255, 255, 0.2)',
+        scale: 1.05
+      } : {}}
+      whileTap={!disabled ? { scale: 0.95 } : {}}
+      aria-label={`Scroll ${direction}`}
+    >
+      <motion.span 
+        style={styles.scrollIcon}
+        animate={!disabled ? {
+          x: direction === 'left' ? [-2, 0, -2] : [2, 0, 2]
+        } : {}}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
+        {direction === 'left' ? '←' : '→'}
+      </motion.span>
+    </motion.button>
+  );
+};
 
 const Shop = () => {
   const dispatch = useAppDispatch();
@@ -734,28 +788,16 @@ const Shop = () => {
           </div>
 
           <div style={styles.scrollButtonsContainer}>
-            <button 
+            <ScrollButton 
+              direction="left" 
               onClick={handleScrollLeftProducts}
-              style={{
-                ...styles.scrollButton,
-                ...(isAtProductsStart && styles.scrollButtonDisabled)
-              }}
-              aria-label="Scroll left"
               disabled={isAtProductsStart}
-            >
-              <span style={styles.scrollIcon}>←</span>
-            </button>
-            <button 
+            />
+            <ScrollButton 
+              direction="right" 
               onClick={handleScrollRightProducts}
-              style={{
-                ...styles.scrollButton,
-                ...(isAtProductsEnd && styles.scrollButtonDisabled)
-              }}
-              aria-label="Scroll right"
               disabled={isAtProductsEnd}
-            >
-              <span style={styles.scrollIcon}>→</span>
-            </button>
+            />
           </div>
         </div>
 
@@ -796,28 +838,16 @@ const Shop = () => {
             </div>
 
             <div style={styles.scrollButtonsContainer}>
-              <button 
+              <ScrollButton 
+                direction="left" 
                 onClick={handleScrollLeftSuggested}
-                style={{
-                  ...styles.scrollButton,
-                  ...(isAtSuggestedStart && styles.scrollButtonDisabled)
-                }}
-                aria-label="Scroll left"
                 disabled={isAtSuggestedStart}
-              >
-                <span style={styles.scrollIcon}>←</span>
-              </button>
-              <button 
+              />
+              <ScrollButton 
+                direction="right" 
                 onClick={handleScrollRightSuggested}
-                style={{
-                  ...styles.scrollButton,
-                  ...(isAtSuggestedEnd && styles.scrollButtonDisabled)
-                }}
-                aria-label="Scroll right"
                 disabled={isAtSuggestedEnd}
-              >
-                <span style={styles.scrollIcon}>→</span>
-              </button>
+              />
             </div>
           </div>
         )}
