@@ -1,218 +1,14 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
+import { motion } from "framer-motion";
 import { useAppSelector, useAppDispatch } from '../comps/hooks';
 import { setProducts } from '../comps/productSlice';
 import { addToCart, decrementFromCart } from '../comps/cartSlice';
 import { productData } from '../comps/productData';
-import Image from 'next/image';
-import { motion } from "framer-motion";
-import Link from 'next/link';
 import BlacksfitBanner from '@/comps/bg';
 
-interface Styles {
-    [key: string]: React.CSSProperties;
-}
-const LOGO:string = "/image/BLACKS.png"
-const styles: Styles = {
-    container: { 
-        fontFamily: 'Arial, sans-serif',
-        backgroundColor: '#000',
-        color: '#fff',
-        minHeight: '100vh',
-        paddingBottom: '2rem'
-    },
-    cartSummary: { 
-        margin: '2rem',
-        padding: '1.5rem', 
-        border: '1px solid #333', 
-        borderRadius: '10px',
-        backgroundColor: '#111'
-    },
-    cartSummaryFlex: { 
-        display: 'flex', 
-        gap: '20px', 
-        alignItems: 'center',
-        flexWrap: 'wrap'
-    },
-    cartItemsContainer: { 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        gap: '10px',
-        marginTop: '1rem'
-    },
-    cartItem: { 
-        padding: '8px 12px', 
-        backgroundColor: '#007bff', 
-        color: 'white', 
-        borderRadius: '20px',
-        fontSize: '0.875rem',
-        fontWeight: '500'
-    },
-    productsSection: {
-        padding: '2rem',
-        maxWidth: '100vw',
-        overflow: 'hidden',
-        position: 'relative'
-    },
-    sectionTitle: {
-        fontSize: '2rem',
-        fontWeight: 'bold',
-        marginBottom: '1.5rem',
-        color: '#fff',
-        paddingLeft: '1rem'
-    },
-    productsGridContainer: {
-        overflowX: 'auto',
-        padding: '1rem',
-        WebkitOverflowScrolling: 'touch',
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none',
-        position: 'relative',
-        scrollBehavior: 'smooth'
-    },
-    productsGrid: {
-        display: 'flex',
-        gap: '1.5rem',
-        marginTop: '1rem',
-        flexWrap: 'nowrap',
-        width: 'max-content'
-    },
-    productCard: {
-        padding: '1.5rem',
-        borderRadius: '15px',
-        backgroundColor: '#111',
-        boxShadow: '0 4px 15px rgba(255, 255, 255, 0.1)',
-        transition: 'all 0.3s ease',
-        position: 'relative',
-        border: '1px solid #333',
-        width: '280px',
-        flexShrink: 0
-    },
-    productCardInCart: {
-        border: '2px solid #007bff',
-        boxShadow: '0 4px 15px rgba(0, 123, 255, 0.3)'
-    },
-    inCartBadge: {
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        backgroundColor: '#28a745',
-        color: 'white',
-        padding: '4px 8px',
-        borderRadius: '10px',
-        fontSize: '0.7rem',
-        fontWeight: 'bold'
-    },
-    productTitle: {
-        fontSize: '1.1rem',
-        fontWeight: 'bold',
-        marginBottom: '0.5rem',
-        color: '#fff',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
-    },
-    productInfo: {
-        color: '#ccc',
-        marginBottom: '0.5rem',
-        fontSize: '0.9rem'
-    },
-    productPrice: {
-        fontSize: '1rem',
-        fontWeight: 'bold',
-        color: '#007bff',
-        marginBottom: '1rem'
-    },
-    imageContainer: {
-        marginBottom: '1rem',
-        borderRadius: '8px',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        height: '180px',
-        position: 'relative'
-    },
-    buttonContainer: {
-        display: 'flex',
-        gap: '0.75rem',
-        marginTop: '1rem'
-    },
-    button: {
-        flex: 1,
-        padding: '0.6rem',
-        fontSize: '0.8rem',
-        fontWeight: 'bold',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease'
-    },
-    addButton: {
-        backgroundColor: '#007bff',
-        color: 'white'
-    },
-    removeButton: {
-        backgroundColor: '#dc3545',
-        color: 'white'
-    },
-    scrollButtonsContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '1rem',
-        marginTop: '1rem'
-    },
-    scrollButton: {
-        background: '#333',
-        color: 'white',
-        border: 'none',
-        borderRadius: '50%',
-        width: '40px',
-        height: '40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease'
-    },
-    scrollButtonDisabled: {
-        opacity: 0.5,
-        cursor: 'not-allowed'
-    },
-    scrollIcon: {
-        fontSize: '1.2rem'
-    },
-    breadcrumb: {
-        padding: '1rem 2rem',
-        fontSize: '0.9rem',
-        color: '#aaa'
-    },
-    breadcrumbLink: {
-        color: '#007bff',
-        textDecoration: 'none',
-        margin: '0 5px'
-    },
-    breadcrumbSeparator: {
-        margin: '0 5px',
-        color: '#666'
-    },
-    modalDescription: {
-        color: '#666',
-        lineHeight: '1.6',
-        marginBottom: '1rem'
-    }
-};
-
-const cardVariants = {
-    hidden: { opacity: 0, x: 20 },
-    visible: (index: number) => ({
-        opacity: 1,
-        x: 0,
-        transition: {
-            duration: 0.5,
-            delay: index * 0.1,
-            ease: "easeOut"
-        }
-    })
-};
+const LOGO = "/image/BLACKS.png";
 
 const generateProductSchema = (product: any) => ({
     "@context": "https://schema.org",
@@ -307,16 +103,53 @@ const HomePage = () => {
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
     const [isAutoScrolling, setIsAutoScrolling] = useState(true);
-    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [modal, setModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const animationFrameRef = useRef<number | null>(null);
 
+    // Initialize products
     useEffect(() => {
         if (products.length === 0) {
             dispatch(setProducts(productData));
         }
     }, [dispatch, products.length]);
 
+    // Auto-scroll implementation with slower speed (0.3px/frame)
+    useEffect(() => {
+        if (!isAutoScrolling || !productsContainerRef.current) return;
+        
+        const container = productsContainerRef.current;
+        let scrollPosition = container.scrollLeft;
+        let direction = 1;
+        const scrollSpeed = 0.3; // Slower scroll speed (0.3 pixels per frame)
+
+        const autoScroll = () => {
+            if (!isAutoScrolling || !container) return;
+            
+            scrollPosition += scrollSpeed * direction;
+            container.scrollLeft = scrollPosition;
+
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            if (scrollPosition >= maxScroll) {
+                direction = -1;
+            } else if (scrollPosition <= 0) {
+                direction = 1;
+            }
+
+            animationFrameRef.current = requestAnimationFrame(autoScroll);
+        };
+
+        animationFrameRef.current = requestAnimationFrame(autoScroll);
+
+        return () => {
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
+    }, [isAutoScrolling]);
+
+    // Scroll handlers
     const handleScrollLeft = useCallback(() => {
         if (productsContainerRef.current) {
             setIsAutoScrolling(false);
@@ -365,6 +198,7 @@ const HomePage = () => {
         }
     }, []);
 
+    // Scroll position tracking
     useEffect(() => {
         const container = productsContainerRef.current;
         if (!container) return;
@@ -377,7 +211,6 @@ const HomePage = () => {
 
         container.addEventListener('scroll', handleScroll);
         window.addEventListener('resize', handleScroll);
-        
         handleScroll();
 
         return () => {
@@ -386,43 +219,13 @@ const HomePage = () => {
             if (scrollTimeoutRef.current) {
                 clearTimeout(scrollTimeoutRef.current);
             }
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
         };
     }, []);
 
-    useEffect(() => {
-        if (!isAutoScrolling) return;
-        
-        const container = productsContainerRef.current;
-        if (!container) return;
-
-        let scrollPosition = container.scrollLeft;
-        let direction = 1;
-        const scrollSpeed = 0.5;
-        let animationFrameId: number;
-
-        const autoScroll = () => {
-            if (!isAutoScrolling || !container) return;
-            
-            scrollPosition += scrollSpeed * direction;
-            container.scrollLeft = scrollPosition;
-
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            if (scrollPosition >= maxScroll) {
-                direction = -1;
-            } else if (scrollPosition <= 0) {
-                direction = 1;
-            }
-
-            animationFrameId = requestAnimationFrame(autoScroll);
-        };
-
-        animationFrameId = requestAnimationFrame(autoScroll);
-
-        return () => {
-            cancelAnimationFrame(animationFrameId);
-        };
-    }, [isAutoScrolling]);
-
+    // Modal handlers
     const openModal = useCallback((product: any) => {
         setSelectedProduct(product);
         setModal(true);
@@ -439,6 +242,7 @@ const HomePage = () => {
         }
     }, [closeModal]);
 
+    // Cart calculations
     const totalItemsInCart = useMemo(() => 
         cartItems.reduce((sum, item) => sum + item.quantity, 0), 
         [cartItems]
@@ -468,6 +272,7 @@ const HomePage = () => {
         return cartItemsMap.has(productId);
     }, [cartItemsMap]);
 
+    // Product card component
     const ProductCard = useCallback(({ product, index }: { product: any, index: number }) => {
         const quantityInCart = getItemQuantityInCart(product.id);
         const inCart = isItemInCart(product.id);
@@ -475,18 +280,14 @@ const HomePage = () => {
         return (
             <motion.article 
                 key={product.id}
-                style={{
-                    ...styles.productCard,
-                    ...(inCart ? styles.productCardInCart : {})
-                }}
-                variants={cardVariants}
-                initial="hidden"
-                animate="visible"
-                custom={index}
-                whileHover={{ 
-                    y: -5,
-                    boxShadow: '0 8px 25px rgba(255, 255, 255, 0.15)'
-                }}
+                className={`bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-lg transition-all ${
+                    inCart ? 'border-blue-500 shadow-blue-500/30' : ''
+                }`}
+                style={{ width: '280px', flexShrink: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                whileHover={{ y: -5 }}
                 itemScope
                 itemType="https://schema.org/Product"
             >
@@ -495,42 +296,44 @@ const HomePage = () => {
                 </script>
 
                 {inCart && (
-                    <div style={styles.inCartBadge}>
+                    <div className="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded-lg text-xs font-bold">
                         In Cart: {quantityInCart}
                     </div>
                 )}
 
-                <h3 style={styles.productTitle} itemProp="name">{product.name}</h3>
-                <p style={styles.productInfo}>Size: <span itemProp="size">{product.size}</span></p>
-                <p style={styles.productPrice} itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                <h3 className="text-white text-lg font-bold truncate" itemProp="name">{product.name}</h3>
+                <p className="text-gray-400 text-sm">Size: <span itemProp="size">{product.size}</span></p>
+                <p className="text-blue-500 font-bold" itemProp="offers" itemScope itemType="https://schema.org/Offer">
                     ₦<span itemProp="price">{product.price.toLocaleString()}</span>
                     <meta itemProp="priceCurrency" content="NGN" />
                 </p>
 
-                <div style={styles.imageContainer} onClick={() => openModal(product)}>
+                <div 
+                    className="relative h-48 mb-4 rounded-lg overflow-hidden cursor-pointer"
+                    onClick={() => openModal(product)}
+                >
                     <Image 
                         src={product.photoUrl}
                         fill
                         alt={`${product.name} - Nigerian Streetwear by Blacksfit | Premium Urban Fashion from Lagos`}
                         title={`Buy ${product.name} - Limited Edition | Blacksfit Official Store`}
-                        style={{ 
-                            objectFit: 'cover',
-                            filter: inCart ? 'grayscale(0%)' : 'grayscale(20%)',
-                            transition: 'filter 0.3s ease'
-                        }}
+                        className={`object-cover transition-all ${
+                            inCart ? 'grayscale-0' : 'grayscale-20'
+                        }`}
                         priority={index < 4}
+                        quality={index < 4 ? 80 : 65}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 280px"
                         placeholder="blur"
                         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                        itemProp="image"
                         loading={index > 3 ? "lazy" : "eager"}
+                        itemProp="image"
                     />
                 </div>
 
-                <div style={styles.buttonContainer}>
+                <div className="flex gap-3 mt-4">
                     <motion.button
                         onClick={() => handleAddToCart(product.id)}
-                        style={{ ...styles.button, ...styles.addButton }}
-                        type="button"
+                        className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-bold"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         aria-label={`Add ${product.name} to cart`}
@@ -541,8 +344,7 @@ const HomePage = () => {
                     {inCart && (
                         <motion.button
                             onClick={() => handleRemoveOneFromCart(product.id)}
-                            style={{ ...styles.button, ...styles.removeButton }}
-                            type="button"
+                            className="flex-1 bg-red-600 text-white py-2 rounded-lg text-sm font-bold"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             aria-label={`Remove one ${product.name} from cart`}
@@ -555,15 +357,16 @@ const HomePage = () => {
         );
     }, [getItemQuantityInCart, isItemInCart, openModal, handleAddToCart, handleRemoveOneFromCart]);
 
-    const cartSummaryDisplay = useMemo(() => (
+    // Cart summary display
+    const cartSummaryDisplay = (
         <motion.section 
-            style={styles.cartSummary}
+            className="bg-gray-900 m-8 p-6 border border-gray-700 rounded-xl"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             aria-label="Shopping cart summary"
         >
-            <div style={styles.cartSummaryFlex}>
+            <div className="flex gap-5 flex-wrap">
                 <div>
                     <h2>Cart Summary</h2>
                     <p>Total Items: <strong>{totalItemsInCart}</strong></p>
@@ -573,12 +376,12 @@ const HomePage = () => {
             
             {cartItems.length > 0 && (
                 <div>
-                    <h3 style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>Items in Cart:</h3>
-                    <div style={styles.cartItemsContainer}>
+                    <h3 className="font-medium mt-4 mb-2">Items in Cart:</h3>
+                    <div className="flex flex-wrap gap-2">
                         {cartItems.map(item => (
                             <span 
                                 key={item.id}
-                                style={styles.cartItem}
+                                className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium"
                             >
                                 {item.name} x{item.quantity}
                             </span>
@@ -587,7 +390,7 @@ const HomePage = () => {
                 </div>
             )}
         </motion.section>
-    ), [cartItems, totalItemsInCart, cartTotal]);
+    );
 
     return (
         <>
@@ -761,10 +564,8 @@ const HomePage = () => {
                 </script>
             </Head>
 
-            <div style={styles.container} itemScope itemType="https://schema.org/WebPage">
-                
-                
-                <BlacksfitBanner/>
+            <div className="bg-black text-white min-h-screen pb-8" itemScope itemType="https://schema.org/WebPage">
+                <BlacksfitBanner />
                 
                 {modal && selectedProduct && (
                     <div
@@ -790,10 +591,9 @@ const HomePage = () => {
                                         width={500}
                                         height={400}
                                         alt={`Detailed view of ${selectedProduct.name} by Blacksfit - Nigerian streetwear`}
-                                        className="w-full h-auto rounded-lg"
-                                        style={{ objectFit: 'cover' }}
-                                        placeholder="blur"
-                                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                                        className="w-full h-auto rounded-lg object-cover"
+                                        priority
+                                        quality={80}
                                     />
                                 </div>
                                 
@@ -806,16 +606,13 @@ const HomePage = () => {
                                         <p className="text-blue-600 font-bold text-lg mb-4">
                                             ₦{selectedProduct.price.toLocaleString()}
                                         </p>
-                                        {selectedProduct.description && (
-                                            <p className="text-gray-700 mb-4">{selectedProduct.description}</p>
-                                        )}
-                                        <p style={styles.modalDescription}>
+                                        <p className="text-gray-700 mb-4">
                                             This limited edition piece is part of our Lagos-inspired collection, 
                                             crafted with premium materials for the Nigerian climate. Each Blacksfit 
                                             item is designed for comfort and style in urban environments, with 
                                             attention to detail that reflects Nigerian street culture.
                                         </p>
-                                        <p style={styles.modalDescription}>
+                                        <p className="text-gray-700 mb-4">
                                             <strong>Material:</strong> Premium cotton blend<br/>
                                             <strong>Care Instructions:</strong> Machine wash cold, tumble dry low<br/>
                                             <strong>Delivery:</strong> Free nationwide shipping (1-3 business days in Lagos)
@@ -847,52 +644,50 @@ const HomePage = () => {
 
                 {cartSummaryDisplay}
                 
-                <main style={styles.productsSection}>
-                    <motion.h1 className="sm:text-2xl text-xl font-bold"
+                <main className="p-8 max-w-full overflow-hidden relative">
+                    <motion.h1 
+                        className="text-2xl font-bold mb-6 pl-4"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
-                        style={styles.sectionTitle}
                     >
-                       <span className="sm:text-sm text-xl font-bold"> Our Latest Collection ({products.length})</span>
+                        Our Latest Collection ({products.length})
                     </motion.h1>
                     
                     <section 
-                        style={styles.productsGridContainer} 
+                        className="overflow-x-auto p-4 scroll-smooth scrollbar-hide"
                         ref={productsContainerRef}
                         onMouseEnter={() => setIsAutoScrolling(false)}
                         onMouseLeave={() => setIsAutoScrolling(true)}
                         aria-label="Product carousel"
                     >
-                        <div style={styles.productsGrid} role="list">
+                        <div className="flex gap-6 mt-4 w-max" role="list">
                             {products.map((product, index) => (
                                 <ProductCard key={product.id} product={product} index={index} />
                             ))}
                         </div>
                     </section>
 
-                    <div style={styles.scrollButtonsContainer}>
+                    <div className="flex justify-center gap-4 mt-4">
                         <button 
                             onClick={handleScrollLeft}
-                            style={{
-                                ...styles.scrollButton,
-                                ...(isAtStart && styles.scrollButtonDisabled)
-                            }}
+                            className={`bg-gray-700 text-white rounded-full w-10 h-10 flex items-center justify-center ${
+                                isAtStart ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
                             aria-label="Scroll products left"
                             disabled={isAtStart}
                         >
-                            <span style={styles.scrollIcon}>←</span>
+                            ←
                         </button>
                         <button 
                             onClick={handleScrollRight}
-                            style={{
-                                ...styles.scrollButton,
-                                ...(isAtEnd && styles.scrollButtonDisabled)
-                            }}
+                            className={`bg-gray-700 text-white rounded-full w-10 h-10 flex items-center justify-center ${
+                                isAtEnd ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
                             aria-label="Scroll products right"
                             disabled={isAtEnd}
                         >
-                            <span style={styles.scrollIcon}>→</span>
+                            →
                         </button>
                     </div>
                 </main>
