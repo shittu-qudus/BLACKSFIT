@@ -11,7 +11,7 @@ const BlacksfitBanner = () => {
   const fallbackBackground = "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0f0f0f 100%)";
 
   return (
-    <div className="  w-full h-screen bg-black text-white overflow-hidden">
+    <div className=" w-full h-screen bg-black text-white overflow-hidden">
       {/* Background Image with Error Handling */}
       {!imageError && (
         <Image
