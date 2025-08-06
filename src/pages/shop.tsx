@@ -360,8 +360,6 @@ const Shop = () => {
   
   const productsContainerRef = useRef<HTMLDivElement>(null);
   const suggestedContainerRef = useRef<HTMLDivElement>(null);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
   
   const [modal, setModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -369,7 +367,6 @@ const Shop = () => {
   const [isAtProductsEnd, setIsAtProductsEnd] = useState(false);
   const [isAtSuggestedStart, setIsAtSuggestedStart] = useState(true);
   const [isAtSuggestedEnd, setIsAtSuggestedEnd] = useState(false);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
 
   const shopProducts = useMemo(() => productData.slice(0, 6), []);
   const suggestedProducts = useMemo(() => productData.slice(6, 12), []);
@@ -379,43 +376,9 @@ const Shop = () => {
     [cartItems]
   );
 
-  useEffect(() => {
-    if (!isAutoScrolling || !productsContainerRef.current) return;
-    
-    const container = productsContainerRef.current;
-    let scrollPosition = container.scrollLeft;
-    let direction = 1;
-    const scrollSpeed = 0.3;
-
-    const autoScroll = () => {
-      if (!isAutoScrolling || !container) return;
-      
-      scrollPosition += scrollSpeed * direction;
-      container.scrollLeft = scrollPosition;
-
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      if (scrollPosition >= maxScroll) {
-        direction = -1;
-      } else if (scrollPosition <= 0) {
-        direction = 1;
-      }
-
-      animationFrameRef.current = requestAnimationFrame(autoScroll);
-    };
-
-    animationFrameRef.current = requestAnimationFrame(autoScroll);
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [isAutoScrolling]);
-
   const handleScrollLeftProducts = useCallback(() => {
     if (!productsContainerRef.current) return;
     
-    setIsAutoScrolling(false);
     const container = productsContainerRef.current;
     const cardWidth = 280 + 24;
     const scrollAmount = Math.min(cardWidth * 2, container.scrollLeft);
@@ -424,20 +387,11 @@ const Shop = () => {
       left: container.scrollLeft - scrollAmount,
       behavior: 'smooth'
     });
-
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsAutoScrolling(true);
-    }, 8000);
   }, []);
 
   const handleScrollRightProducts = useCallback(() => {
     if (!productsContainerRef.current) return;
     
-    setIsAutoScrolling(false);
     const container = productsContainerRef.current;
     const cardWidth = 280 + 24;
     const maxScroll = container.scrollWidth - container.clientWidth;
@@ -447,20 +401,11 @@ const Shop = () => {
       left: container.scrollLeft + scrollAmount,
       behavior: 'smooth'
     });
-
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsAutoScrolling(true);
-    }, 8000);
   }, []);
 
   const handleScrollLeftSuggested = useCallback(() => {
     if (!suggestedContainerRef.current) return;
     
-    setIsAutoScrolling(false);
     const container = suggestedContainerRef.current;
     const cardWidth = 280 + 24;
     const scrollAmount = Math.min(cardWidth * 2, container.scrollLeft);
@@ -469,20 +414,11 @@ const Shop = () => {
       left: container.scrollLeft - scrollAmount,
       behavior: 'smooth'
     });
-
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsAutoScrolling(true);
-    }, 8000);
   }, []);
 
   const handleScrollRightSuggested = useCallback(() => {
     if (!suggestedContainerRef.current) return;
     
-    setIsAutoScrolling(false);
     const container = suggestedContainerRef.current;
     const cardWidth = 280 + 24;
     const maxScroll = container.scrollWidth - container.clientWidth;
@@ -492,14 +428,6 @@ const Shop = () => {
       left: container.scrollLeft + scrollAmount,
       behavior: 'smooth'
     });
-
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsAutoScrolling(true);
-    }, 8000);
   }, []);
 
   const setupScrollTracking = (
@@ -540,8 +468,6 @@ const Shop = () => {
     return () => {
       productsCleanup?.();
       suggestedCleanup?.();
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
   }, []);
 
@@ -712,8 +638,6 @@ const Shop = () => {
           <div 
             style={styles.productsGridContainer} 
             ref={productsContainerRef}
-            onMouseEnter={() => setIsAutoScrolling(false)}
-            onMouseLeave={() => setIsAutoScrolling(true)}
           >
             <div style={styles.productsGrid}>
               {shopProducts.map((product, index) => (
@@ -759,8 +683,6 @@ const Shop = () => {
             <div 
               style={styles.productsGridContainer} 
               ref={suggestedContainerRef}
-              onMouseEnter={() => setIsAutoScrolling(false)}
-              onMouseLeave={() => setIsAutoScrolling(true)}
             >
               <div style={styles.productsGrid}>
                 {suggestedProducts.map((product, index) => (

@@ -102,11 +102,8 @@ const HomePage = () => {
     const productsContainerRef = useRef<HTMLDivElement>(null);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
-    const [isAutoScrolling, setIsAutoScrolling] = useState(true);
     const [modal, setModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
-    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const animationFrameRef = useRef<number | null>(null);
 
     // Initialize products
     useEffect(() => {
@@ -115,44 +112,9 @@ const HomePage = () => {
         }
     }, [dispatch, products.length]);
 
-    // Auto-scroll implementation with slower speed (0.3px/frame)
-    useEffect(() => {
-        if (!isAutoScrolling || !productsContainerRef.current) return;
-        
-        const container = productsContainerRef.current;
-        let scrollPosition = container.scrollLeft;
-        let direction = 1;
-        const scrollSpeed = 0.3; // Slower scroll speed (0.3 pixels per frame)
-
-        const autoScroll = () => {
-            if (!isAutoScrolling || !container) return;
-            
-            scrollPosition += scrollSpeed * direction;
-            container.scrollLeft = scrollPosition;
-
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            if (scrollPosition >= maxScroll) {
-                direction = -1;
-            } else if (scrollPosition <= 0) {
-                direction = 1;
-            }
-
-            animationFrameRef.current = requestAnimationFrame(autoScroll);
-        };
-
-        animationFrameRef.current = requestAnimationFrame(autoScroll);
-
-        return () => {
-            if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current);
-            }
-        };
-    }, [isAutoScrolling]);
-
     // Scroll handlers
     const handleScrollLeft = useCallback(() => {
         if (productsContainerRef.current) {
-            setIsAutoScrolling(false);
             const container = productsContainerRef.current;
             const cardWidth = 280 + 24;
             const scrollAmount = Math.min(cardWidth * 2, container.scrollLeft);
@@ -161,20 +123,11 @@ const HomePage = () => {
                 left: container.scrollLeft - scrollAmount,
                 behavior: 'smooth'
             });
-
-            if (scrollTimeoutRef.current) {
-                clearTimeout(scrollTimeoutRef.current);
-            }
-            
-            scrollTimeoutRef.current = setTimeout(() => {
-                setIsAutoScrolling(true);
-            }, 8000);
         }
     }, []);
 
     const handleScrollRight = useCallback(() => {
         if (productsContainerRef.current) {
-            setIsAutoScrolling(false);
             const container = productsContainerRef.current;
             const cardWidth = 280 + 24;
             const maxScroll = container.scrollWidth - container.clientWidth;
@@ -187,14 +140,6 @@ const HomePage = () => {
                 left: container.scrollLeft + scrollAmount,
                 behavior: 'smooth'
             });
-
-            if (scrollTimeoutRef.current) {
-                clearTimeout(scrollTimeoutRef.current);
-            }
-            
-            scrollTimeoutRef.current = setTimeout(() => {
-                setIsAutoScrolling(true);
-            }, 8000);
         }
     }, []);
 
@@ -216,12 +161,6 @@ const HomePage = () => {
         return () => {
             container.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleScroll);
-            if (scrollTimeoutRef.current) {
-                clearTimeout(scrollTimeoutRef.current);
-            }
-            if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current);
-            }
         };
     }, []);
 
@@ -657,8 +596,6 @@ const HomePage = () => {
                     <section 
                         className="overflow-x-auto p-4 scroll-smooth scrollbar-hide"
                         ref={productsContainerRef}
-                        onMouseEnter={() => setIsAutoScrolling(false)}
-                        onMouseLeave={() => setIsAutoScrolling(true)}
                         aria-label="Product carousel"
                     >
                         <div className="flex gap-6 mt-4 w-max" role="list">
