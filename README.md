@@ -1,40 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 🖤 BLACKSFIT
 
-## Getting Started
+**BLACKSFIT** is a premium fashion storefront built for minimalist lovers of bold, black-themed streetwear. This project is a sleek and modern frontend e-commerce application that allows users to browse, shop, and connect — all in one seamless experience.
 
-First, run the development server:
+🔗 [Live Demo](https://blacksfit-test.vercel.app)
+
+---
+
+##  Brand Story & Mission
+
+> “BLACKSFIT was born from a vision to make **black fashion iconic again** — bold, minimal, and powerful. We blend streetwear culture with timeless design for individuals who express themselves through simplicity.”
+
+Our mission is to **redefine fashion identity through black-focused designs** while making online shopping accessible and immersive for everyone.
+
+---
+
+##  Features
+
+- 🛍 **Product Catalog** – View our curated collection of BLACKSFIT apparel
+- 🧺 **Cart Functionality** – Add items to your cart with dynamic button states
+- 💳 **(Planned) Checkout Integration** – Future support for Paystack or Flutterwave
+- 📨 **Customer Contact Form** – Built-in contact page to receive inquiries
+- 📱 **Fully Responsive** – Optimized for all screen sizes and devices
+- 🌙 **Dark UI Theme** – Sleek black-themed interface to reflect the brand
+- 🚀 **Hosted on Vercel** – Fast performance with global CDN
+
+---
+
+## 🧰 Tech Stack
+
+| Tech | Purpose |
+|------|---------|
+| **Next.js** | App framework with file-based routing and SSR |
+| **Tailwind CSS** | Utility-first styling framework |
+| **TypeScript** | Adds static typing for better development |
+| **Framer Motion** | Smooth animations and transitions |
+| **EmailJS** | Customer contact form integration |
+| **Redux** |State Management|
+| **Vercel** | Hosting and deployment platform |
+
+---
+
+## 📦 Folder Structure (Simplified)
+
+blacksfit/
+├── public/ # Static files (images, icons)
+├── src/
+│ ├── components/ # Reusable components (Navbar, Footer, ProductCard)
+│ ├── pages/ # Next.js routing pages (Home, Shop, Contact, etc.)
+│ ├── styles/ # Tailwind and global styles
+│ └── data/ # Product data (static/mock)
+├── tailwind.config.js # Tailwind CSS configuration
+├── next.config.js # Next.js setup
+└── README.md # Project documentation
+
+
+
+---
+
+## 📸 UI Preview
+
+> A clean and elegant interface that showcases BLACKSFIT’s latest collection:
+
+![BLACKSFIT UI Screenshot](public/image/UI.png)
+
+---
+
+## 📬 Contact Form
+
+We integrated **Formspree** to handle customer inquiries.  
+Users can fill out the **Contact** form to request custom sizes, delivery options, or ask any brand-related questions.
+
+**Contact Page:** `/contact`  
+Handles: Full name, Email address, Message
+
+---
+
+## 🛒 Payment Integration (Planned)
+
+Future improvements include integrating a secure checkout flow using:
+
+- **Paystack** (for Nigerian payments)
+-
+
+Planned flow:
+1. Add to Cart
+2. Proceed to Checkout
+3. Select Payment Method
+4. Complete Purchase
+
+Currently under development.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
+git clone https://github.com/shittu-qudus/BLACKSFIT
+cd BLACKSFIT
+
+
+ Install Dependencies
+bash
+npm install
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+yarn install
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 to view the Web app
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Author
+Built by Shittu Qudus Adekunle
+📍 Nigeria — Frontend Developer (React/Next.js)
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+LinkedIN- https://ng.linkedin.com/in/shittu-qudus-5787762ab
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Portfolio- https://my-portofolio-4ssz.vercel.app/
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+GitHub- https://github.com/shittu-qudus
