@@ -68,7 +68,7 @@ const PaystackCheckout: React.FC = () => {
         lastName: '',
         phone: '',
         address: '',
-          size: '',
+        size: '',
     });
     
     const [isProcessing, setIsProcessing] = useState(false);
@@ -189,7 +189,9 @@ const PaystackCheckout: React.FC = () => {
                 order_time: new Date().toLocaleTimeString(),
                 // Additional fields that might be useful
                 from_name: 'BlackFit Store',
-                reply_to: 'noreply@blackfit.com'
+                reply_to: 'noreply@blackfit.com',
+                // Preferred size field
+                item_size: customerInfo.size || 'Not provided'
             };
 
             console.log('Template Params:', templateParams);
@@ -359,6 +361,11 @@ const PaystackCheckout: React.FC = () => {
                         display_name: "Email",
                         variable_name: "email",
                         value: customerDetails.email.trim() || 'Not provided'
+                    },
+                    {
+                        display_name: "Size",
+                        variable_name: "size",
+                        value: customerDetails.size.trim() || 'Not provided'
                     },
                         {
                             display_name: "Cart Items",
