@@ -511,29 +511,34 @@ const Shop = () => {
 
         {modal && selectedProduct && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto"
             onClick={handleBackdropClick}
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
+            style={{ 
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch'
+            }}
           >
-            <div className="bg-black rounded-lg p-6 max-w-4xl w-full mx-4 relative">
+            <div className="bg-black rounded-lg p-6 max-w-4xl w-full mx-4 relative my-8 max-h-[90vh] overflow-y-auto">
               <button
                 onClick={closeModal}
-                className="text-red-500 text-2xl absolute top-2 right-2 hover:text-red-700"
+                className="text-red-500 text-2xl absolute top-2 right-2 hover:text-red-700 z-10 sticky"
                 aria-label="Close product details"
+                style={{ position: 'sticky', top: '8px' }}
               >
                 ×
               </button>
               
-              <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex flex-col md:flex-row gap-6 pt-8">
                 <div className="md:w-1/2 relative aspect-square">
                   <NextImage 
                     src={selectedProduct.fullimage || selectedProduct.photoUrl}
-                            width={300}
-                                        height={400}
+                    width={300}
+                    height={400}
                     alt={`Detailed view of ${selectedProduct.name} by Blacksfit - Nigerian streetwear`}
-                     className="w-full h-auto rounded-lg object-cover"
+                    className="w-full h-auto rounded-lg object-cover"
                     priority
                     quality={85}
                     fetchPriority="high"
@@ -565,7 +570,7 @@ const Shop = () => {
                     </p>
                   </div>
                   
-                  <div className="flex justify-end space-x-2 mt-4">
+                  <div className="flex justify-end space-x-2 mt-4 sticky bottom-0 bg-black pt-4">
                     <motion.button
                       onClick={closeModal}
                       className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded transition-colors"
