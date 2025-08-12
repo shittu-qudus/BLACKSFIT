@@ -219,7 +219,7 @@ const HomePage = () => {
         return (
             <motion.article 
                 key={product.id}
-                className={`bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-lg transition-all ${
+                className={`bg-black-900 p-6 rounded-xl border border-gray-700 shadow-lg transition-all ${
                     inCart ? 'border-blue-500 shadow-blue-500/30' : ''
                 }`}
                 style={{ width: '280px', flexShrink: 0 }}
@@ -299,7 +299,7 @@ const HomePage = () => {
     // Cart summary display
     const cartSummaryDisplay = (
         <motion.section 
-            className="bg-gray-900 m-8 p-6 border border-gray-700 rounded-xl"
+            className="bg-black-900 m-8 p-6 border border-gray-700 rounded-xl"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -514,7 +514,7 @@ const HomePage = () => {
                         aria-modal="true"
                         aria-labelledby="modal-title"
                     >
-                        <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 relative">
+                        <div className="bg-black rounded-lg p-6 max-w-4xl w-full mx-4 relative">
                             <button
                                 onClick={closeModal}
                                 className="text-red-500 text-2xl absolute top-2 right-2 hover:text-red-700"
@@ -523,7 +523,7 @@ const HomePage = () => {
                                 ×
                             </button>
                             
-                            <div className="flex flex-col md:flex-row gap-6">
+                            <div className="flex flex-col md:flex-row gap-6 ">
                                 <div className="md:w-1/2">
                                     <Image 
                                         src={selectedProduct.fullimage || selectedProduct.photoUrl}
@@ -532,26 +532,28 @@ const HomePage = () => {
                                         alt={`Detailed view of ${selectedProduct.name} by Blacksfit - Nigerian streetwear`}
                                         className="w-full h-auto rounded-lg object-cover"
                                         priority
-                                        quality={80}
+                                          loading="eager" 
+                                        quality={85}
+                                         fetchPriority="high"
                                     />
                                 </div>
                                 
                                 <div className="md:w-1/2">
                                     <div className="mt-0 md:mt-4">
-                                        <h1 id="modal-title" className="text-xl font-bold text-gray-800 mb-2">
+                                        <h1 id="modal-title" className="text-xl font-bold text-white-700 mb-2">
                                             {selectedProduct.name}
                                         </h1>
                                         <p className="text-gray-600 mb-2">Size: {selectedProduct.size}</p>
                                         <p className="text-blue-600 font-bold text-lg mb-4">
                                             ₦{selectedProduct.price.toLocaleString()}
                                         </p>
-                                        <p className="text-gray-700 mb-4">
+                                        <p className="text-white-700  mb-4">
                                             This limited edition piece is part of our Lagos-inspired collection, 
                                             crafted with premium materials for the Nigerian climate. Each Blacksfit 
                                             item is designed for comfort and style in urban environments, with 
                                             attention to detail that reflects Nigerian street culture.
                                         </p>
-                                        <p className="text-gray-700 mb-4">
+                                        <p className="text-white-700  mb-4">
                                             <strong>Material:</strong> Premium cotton blend<br/>
                                             <strong>Care Instructions:</strong> Machine wash cold, tumble dry low<br/>
                                             <strong>Delivery:</strong> Free nationwide shipping (1-3 business days in Lagos)
@@ -633,4 +635,4 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default HomePage;  

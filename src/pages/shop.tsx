@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../comps/hooks';
 import { addToCart, decrementFromCart } from '../comps/cartSlice';
@@ -152,39 +152,7 @@ const styles: Styles = {
     opacity: 0.3,
     cursor: 'not-allowed',
     transform: 'none !important'
-  },
-  modal: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 50
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    maxWidth: '28rem',
-    width: '100%',
-    margin: '1rem',
-    position: 'relative'
-  },
-  modalCloseButton: {
-    color: '#dc3545',
-    fontSize: '1.5rem',
-    position: 'absolute',
-    top: '0.5rem',
-    right: '0.5rem',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    transition: 'color 0.2s ease'
-  },
+  }
 };
 
 const cardVariants = {
@@ -274,7 +242,7 @@ const ProductCard: React.FC<{
         role="button"
         aria-label={`View details for ${product.name}`}
       >
-        <Image 
+        <NextImage 
           src={imageError ? '/api/placeholder/280/180' : product.photoUrl}
           fill
           alt={`${product.name} product image`}
@@ -515,12 +483,13 @@ const Shop = () => {
     }
   }, [modal]);
 
-  const handleAddToCartFromModal = useCallback(() => {
-    if (selectedProduct) {
-      handleAddToCart(selectedProduct.id);
-      closeModal();
+  // Preload full image when product is selected
+  useEffect(() => {
+    if (selectedProduct?.fullimage) {
+      const img = new Image();
+      img.src = selectedProduct.fullimage;
     }
-  }, [selectedProduct, handleAddToCart, closeModal]);
+  }, [selectedProduct]);
 
   return (
     <>
@@ -542,83 +511,81 @@ const Shop = () => {
 
         {modal && selectedProduct && (
           <div
-            style={styles.modal}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
             onClick={handleBackdropClick}
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
           >
-            <div style={styles.modalContent}>
+            <div className="bg-black rounded-lg p-6 max-w-4xl w-full mx-4 relative">
               <button
                 onClick={closeModal}
-                style={styles.modalCloseButton}
+                className="text-red-500 text-2xl absolute top-2 right-2 hover:text-red-700"
                 aria-label="Close product details"
               >
                 ×
               </button>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ position: 'relative', height: '300px' }}>
-                  <Image 
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="md:w-1/2 relative aspect-square">
+                  <NextImage 
                     src={selectedProduct.fullimage || selectedProduct.photoUrl}
-                    fill
-                    alt={`Detailed view of ${selectedProduct.name}`}
-                    style={{ 
-                      objectFit: 'cover',
-                      borderRadius: '8px'
-                    }}
+                            width={300}
+                                        height={400}
+                    alt={`Detailed view of ${selectedProduct.name} by Blacksfit - Nigerian streetwear`}
+                     className="w-full h-auto rounded-lg object-cover"
+                    priority
+                    quality={85}
+                    fetchPriority="high"
                     placeholder="blur"
                     blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </div>
                 
-                <div>
-                  <h1 id="modal-title" style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '0.5rem' }}>
-                    {selectedProduct.name}
-                  </h1>
-                  <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>Size: {selectedProduct.size}</p>
-                  <p style={{ color: '#2563eb', fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '1rem' }}>
-                    ₦{selectedProduct.price.toLocaleString()}
-                  </p>
-                  {selectedProduct.description && (
-                    <p style={{ color: '#374151', marginBottom: '1rem' }}>{selectedProduct.description}</p>
-                  )}
-                  <p style={{ color: '#374151', marginBottom: '1rem' }}>
-                    This premium product is part of our exclusive collection.
-                  </p>
-                </div>
-                
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1rem' }}>
-                  <motion.button
-                    onClick={closeModal}
-                    style={{ 
-                      padding: '0.5rem 1rem',
-                      borderRadius: '4px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      backgroundColor: '#d1d5db',
-                      color: '#374151'
-                    }}
-                    whileHover={{ backgroundColor: '#9ca3af' }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Close
-                  </motion.button>
-                  <motion.button
-                    onClick={handleAddToCartFromModal}
-                    style={{ 
-                      padding: '0.5rem 1rem',
-                      borderRadius: '4px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      backgroundColor: '#3b82f6',
-                      color: 'white'
-                    }}
-                    whileHover={{ backgroundColor: '#2563eb' }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Add to Cart
-                  </motion.button>
+                <div className="md:w-1/2">
+                  <div className="mt-0 md:mt-4">
+                    <h1 id="modal-title" className="text-xl font-bold text-white-800 mb-2">
+                      {selectedProduct.name}
+                    </h1>
+                    <p className="text-gray-600 mb-2">Size: {selectedProduct.size}</p>
+                    <p className="text-blue-600 font-bold text-lg mb-4">
+                      ₦{selectedProduct.price.toLocaleString()}
+                    </p>
+                    <p className="text-white-700 mb-4">
+                      This limited edition piece is part of our Lagos-inspired collection, 
+                      crafted with premium materials for the Nigerian climate. Each Blacksfit 
+                      item is designed for comfort and style in urban environments, with 
+                      attention to detail that reflects Nigerian street culture.
+                    </p>
+                    <p className="text-white-700 mb-4">
+                      <strong>Material:</strong> Premium cotton blend<br/>
+                      <strong>Care Instructions:</strong> Machine wash cold, tumble dry low<br/>
+                      <strong>Delivery:</strong> Free nationwide shipping (1-3 business days in Lagos)
+                    </p>
+                  </div>
+                  
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <motion.button
+                      onClick={closeModal}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded transition-colors"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      Close
+                    </motion.button>
+                    <motion.button
+                      onClick={() => {
+                        handleAddToCart(selectedProduct.id);
+                        closeModal();
+                      }}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      Add to Cart
+                    </motion.button>
+                  </div>
                 </div>
               </div>
             </div>
