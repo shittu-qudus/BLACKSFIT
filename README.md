@@ -2,7 +2,7 @@
 
 **BLACKSFIT** is a premium fashion storefront built for minimalist lovers of bold, black-themed streetwear. This project is a sleek and modern frontend e-commerce application that allows users to browse, shop, and connect — all in one seamless experience.
 
-🔗 [Live Demo](https://blacksfit-test.vercel.app)
+🔗 [Live Demo](https://blacksfit.com)
 
 ---
 

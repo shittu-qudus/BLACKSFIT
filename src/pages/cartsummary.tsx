@@ -12,7 +12,6 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
-// Dynamic imports with loading states
 const PaystackCheckout = dynamic(() => import('@/components/PaystackCheckout'), {
     loading: () => (
         <div style={{ 

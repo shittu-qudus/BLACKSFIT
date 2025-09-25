@@ -26,7 +26,7 @@ const BlacksfitBanner = () => {
           onLoad={() => setImageLoaded(true)}
           onError={() => {
             setImageError(true);
-            console.log('Image failed to load: /image/newbg.png');
+            
           }}
         />
       )}

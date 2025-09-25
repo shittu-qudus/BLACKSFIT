@@ -89,7 +89,7 @@ const PaystackCheckout: React.FC = () => {
     useEffect(() => {
         try {
             emailjs.init(EMAILJS_USER_ID);
-            console.log('EmailJS initialized successfully');
+           
         } catch (error) {
             console.error('EmailJS initialization failed:', error);
         }
@@ -99,7 +99,7 @@ const PaystackCheckout: React.FC = () => {
     useEffect(() => {
         const checkPaystackLoaded = () => {
             if (window.PaystackPop) {
-                console.log('Paystack already loaded');
+                
                 setPaystackLoaded(true);
                 setIsLoading(false);
                 return;
@@ -108,17 +108,16 @@ const PaystackCheckout: React.FC = () => {
             // If not loaded, try to load it dynamically
             const existingScript = document.querySelector('script[src="https://js.paystack.co/v1/inline.js"]');
             if (existingScript) {
-                console.log('Paystack script already in DOM, waiting for load...');
+                
                 return;
             }
 
-            console.log('Loading Paystack script...');
+          
             const script = document.createElement('script');
             script.src = 'https://js.paystack.co/v1/inline.js';
             script.async = true;
             script.onload = () => {
-                console.log('Paystack script loaded successfully');
-                // Wait a bit for PaystackPop to be available
+              
                 setTimeout(() => {
                     if (window.PaystackPop) {
                         setPaystackLoaded(true);
@@ -157,14 +156,7 @@ const PaystackCheckout: React.FC = () => {
     };
 
     const sendEmailNotification = async (orderDetails: PaystackResponse, customerInfo: CustomerDetails, items: any[], total: number) => {
-        console.log('=== EmailJS Send Debug ===');
-        console.log('EmailJS Service ID:', EMAILJS_SERVICE_ID);
-        console.log('EmailJS Template ID:', EMAILJS_TEMPLATE_ID);
-        console.log('EmailJS User ID:', EMAILJS_USER_ID);
-        console.log('Customer Info:', customerInfo);
-        console.log('Order Details:', orderDetails);
-        console.log('Cart Items:', items);
-        console.log('Cart Total:', total);
+       
 
         setEmailStatus('Sending email...');
 
@@ -194,7 +186,7 @@ const PaystackCheckout: React.FC = () => {
                 item_size: customerInfo.size || 'Not provided'
             };
 
-            console.log('Template Params:', templateParams);
+            
 
             // Send email using emailjs.send method
             const response = await emailjs.send(
@@ -204,8 +196,6 @@ const PaystackCheckout: React.FC = () => {
                 EMAILJS_USER_ID
             );
             
-            console.log('EmailJS Response:', response);
-            console.log('Email sent successfully with status:', response.status);
             setEmailStatus('Email sent successfully!');
             
             // Clear status after 3 seconds
@@ -245,7 +235,7 @@ const PaystackCheckout: React.FC = () => {
 
             // Try alternative method if first fails
             if (error?.status === 400 || error?.status === 401) {
-                console.log('Trying alternative EmailJS method...');
+                
                 try {
                     const altResponse = await emailjs.sendForm(
                         EMAILJS_SERVICE_ID,
@@ -254,7 +244,7 @@ const PaystackCheckout: React.FC = () => {
                         createTempForm(templateParams),
                         EMAILJS_USER_ID
                     );
-                    console.log('Alternative method succeeded:', altResponse);
+                  
                     setEmailStatus('Email sent via alternative method!');
                 } catch (altError) {
                     console.error('Alternative method also failed:', altError);
@@ -290,13 +280,7 @@ const PaystackCheckout: React.FC = () => {
     };
 
     const initializePaystack = () => {
-        console.log('=== Paystack Initialization Debug ===');
-        console.log('paystackLoaded:', paystackLoaded);
-        console.log('window.PaystackPop:', window.PaystackPop);
-        console.log('PAYSTACK_PUBLIC_KEY:', PAYSTACK_PUBLIC_KEY);
-        console.log('customerDetails:', customerDetails);
-        console.log('cartTotal:', cartTotal);
-        console.log('cartItems:', cartItems);
+       
 
         if (!paystackLoaded || !window.PaystackPop) {
             console.error('Paystack not loaded');
@@ -381,17 +365,16 @@ const PaystackCheckout: React.FC = () => {
                     ]
                 },
                 callback: function(response: PaystackResponse) {
-                    console.log('Payment callback triggered:', response);
+                   
                     
                     // Handle async operations without making the callback async
                     const handlePaymentSuccess = async () => {
                         try {
-                            // Payment successful
-                            console.log('Payment successful:', response);
+                            
                             
                             // Check payment status
                             if (response.status === 'success') {
-                                console.log('Payment verified as successful, sending email...');
+                                
                                 
                                 // Store current state before clearing cart
                                 const currentCustomerDetails = { ...customerDetails };
@@ -418,7 +401,7 @@ const PaystackCheckout: React.FC = () => {
                                       size: '',
                                 });
                             } else {
-                                console.log('Payment status not success:', response.status);
+                              
                                 alert(`Payment status: ${response.status}. Please contact support if you were charged.`);
                             }
                             
@@ -434,22 +417,18 @@ const PaystackCheckout: React.FC = () => {
                     handlePaymentSuccess();
                 },
                 onClose: function() {
-                    console.log('Payment dialog closed by user');
+                    
                     setIsProcessing(false);
                 }
             };
 
-            console.log('Payment config:', paymentConfig);
-            console.log('About to call PaystackPop.setup...');
 
             const handler = window.PaystackPop.setup(paymentConfig);
             
-            console.log('Handler created:', handler);
-            console.log('About to open iframe...');
+            
             
             handler.openIframe();
-            
-            console.log('Iframe opened successfully'  );
+           
 
         } catch (error: any) {
             console.error('Detailed error in initializePaystack:', error);
@@ -475,7 +454,7 @@ const PaystackCheckout: React.FC = () => {
     const handleCheckout = (e: React.FormEvent) => {
         e.preventDefault();
         
-        console.log('Checkout form submitted');
+       
         
         // Validate form
         if (!customerDetails.email || !customerDetails.firstName || !customerDetails.lastName) {

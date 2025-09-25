@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://blacksfit-test.vercel.app
+Host: https://blacksfit.com
 
 # Sitemaps
-Sitemap: https://blacksfit-test.vercel.app/sitemap.xml
+Sitemap: https://blacksfit.com/sitemap.xml

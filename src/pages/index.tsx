@@ -8,20 +8,19 @@ import { addToCart, decrementFromCart } from '../comps/cartSlice';
 import { productData } from '../comps/productData';
 import BlacksfitBanner from '@/comps/bg';
 
-const LOGO = "/image/BLACKS.png";
 
 const generateProductSchema = (product: any) => ({
     "@context": "https://schema.org",
     "@type": "Product",
     "name": product.name,
-    "image": LOGO,
+    "image": "https://tinyurl.com/vvvhvp7a",
     "description": `Limited edition ${product.name} by Blacksfit - Premium Nigerian urban fashion streetwear. Size ${product.size}. Handcrafted in Lagos with premium materials.`,
     "sku": `BLK-${product.id.toString().padStart(4, '0')}`,
     "mpn": `BLK-${product.id.toString().padStart(4, '0')}`,
     "brand": {
         "@type": "Brand",
         "name": "Blacksfit",
-        "logo": `${LOGO}`,
+        "logo": "https://tinyurl.com/vvvhvp7a",
         "description": "Premium Nigerian streetwear brand creating Lagos-inspired urban fashion"
     },
     "review": {
@@ -45,7 +44,7 @@ const generateProductSchema = (product: any) => ({
     },
     "offers": {
         "@type": "Offer",
-        "url": `https://blacksfit-test.vercel.app/shop/${product.id}`,
+        "url": `https://blacksfit.com/shop/${product.id}`,
         "priceCurrency": "NGN",
         "price": product.price,
         "priceValidUntil": "2024-12-31",
@@ -350,15 +349,16 @@ const HomePage = () => {
                     content="Blacksfit: Nigeria's leading urban fashion brand. Shop exclusive Lagos-inspired streetwear - limited edition hoodies, tees & more. Free shipping nationwide." 
                 />
                 <meta name="keywords" content="nigerian streetwear, lagos fashion, blacksfit clothing, african urban wear, premium streetwear nigeria, lagos clothing brand, nigerian urban fashion, african designer clothes, buy nigerian fashion online" />
-                <link rel="canonical" href="https://blacksfit-test.vercel.app" />
+                <link rel="canonical" href="https://blacksfit.com" />
+                <link rel="icon" href="https://tinyurl.com/vvvhvp7a" type="image/png" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 
                 {/* Open Graph / Facebook */}
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://blacksfit-test.vercel.app" />
+                <meta property="og:url" content="https://blacksfit.com" />
                 <meta property="og:title" content="Blacksfit | Premium Nigerian Streetwear & Urban Fashion" />
                 <meta property="og:description" content="Nigeria's leading urban fashion brand with Lagos-inspired streetwear collections. Free nationwide delivery." />
-                <meta property="og:image" content="https://blacksfit-test.vercel.app/images/social-preview.jpg" />
+                <meta property="og:image" content="https://blacksfit.com/images/social-preview.jpg" />
                 <meta property="og:locale" content="en_NG" />
                 <meta property="og:site_name" content="Blacksfit" />
 
@@ -368,7 +368,7 @@ const HomePage = () => {
                 <meta name="twitter:creator" content="@blacksfit08" />
                 <meta name="twitter:title" content="Blacksfit | Premium Nigerian Streetwear & Urban Fashion" />
                 <meta name="twitter:description" content="Nigeria's leading urban fashion brand with Lagos-inspired streetwear collections. Free nationwide delivery." />
-                <meta name="twitter:image" content="https://blacksfit-test.vercel.app/images/social-preview.jpg" />
+                <meta name="twitter:image" content="https://blacksfit.com/images/social-preview.jpg" />
 
                 {/* Geo Tags */}
                 <meta name="geo.region" content="NG-LA" />
@@ -393,10 +393,10 @@ const HomePage = () => {
                         "@context": "https://schema.org",
                         "@type": "WebSite",
                         "name": "Blacksfit",
-                        "url": "https://blacksfit-test.vercel.app",
+                        "url": "https://blacksfit.com",
                         "potentialAction": {
                             "@type": "SearchAction",
-                            "target": "https://blacksfit-test.vercel.app/search?q={search_term_string}",
+                            "target": "https://blacksfit.com/search?q={search_term_string}",
                             "query-input": "required name=search_term_string"
                         },
                         "inLanguage": "en-NG"
@@ -408,8 +408,8 @@ const HomePage = () => {
                         "@context": "https://schema.org",
                         "@type": "Organization",
                         "name": "Blacksfit",
-                        "url": "https://blacksfit-test.vercel.app",
-                        "logo": "https://blacksfit-test.vercel.app/BLACKS.png",
+                        "url": "https://blacksfit.com",
+                        "logo": "https://tinyurl.com/vvvhvp7a",
                         "description": "Premium Nigerian streetwear brand creating Lagos-inspired urban fashion",
                         "foundingDate": "2020",
                         "founders": [{
@@ -446,25 +446,25 @@ const HomePage = () => {
                         "@type": "WebPage",
                         "name": "Blacksfit - Premium Nigerian Streetwear",
                         "description": "Nigeria's leading urban fashion brand with Lagos-inspired streetwear collections",
-                        "url": "https://blacksfit-test.vercel.app",
+                        "url": "https://blacksfit.com",
                         "breadcrumb": {
                             "@type": "BreadcrumbList",
                             "itemListElement": [{
                                 "@type": "ListItem",
                                 "position": 1,
                                 "name": "Home",
-                                "item": "https://blacksfit-test.vercel.app"
+                                "item": "https://blacksfit.com"
                             }, {
                                 "@type": "ListItem",
                                 "position": 2,
                                 "name": "shop",
-                                "item": "https://blacksfit-test.vercel.app/shop"
+                                "item": "https://blacksfit.com/shop"
                             }]
                         },
                         "inLanguage": "en-NG",
                         "potentialAction": {
                             "@type": "ReadAction",
-                            "target": ["https://blacksfit-test.vercel.app"]
+                            "target": ["https://blacksfit.com"]
                         }
                     })}
                 </script>
@@ -571,7 +571,7 @@ const HomePage = () => {
                                         <p className="text-white-700  mb-4">
                                             <strong>Material:</strong> Premium cotton blend<br/>
                                             <strong>Care Instructions:</strong> Machine wash cold, tumble dry low<br/>
-                                            <strong>Delivery:</strong> Free nationwide shipping (1-3 business days in Lagos)
+                                            <strong>Delivery:</strong> lagos delivery in 24-48 hours<br/> outside lagos 3-5 days<br/>
                                         </p>
                                     </div>
                                     
@@ -610,11 +610,13 @@ const HomePage = () => {
                         Our Latest Collection ({products.length})
                     </motion.h1>
                     
+                     <h2 className="text-xl font-semibold"> swipe left</h2>
                     <section 
                         className="overflow-x-auto p-4 scroll-smooth scrollbar-hide"
                         ref={productsContainerRef}
                         aria-label="Product carousel"
-                    >
+                    > 
+                   
                         <div className="flex gap-6 mt-4 w-max" role="list">
                             {products.map((product, index) => (
                                 <ProductCard key={product.id} product={product} index={index} />
