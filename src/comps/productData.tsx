@@ -2,17 +2,17 @@
 import { Product } from "./types";
 
 export const productData: Product[] = [
-    { id: 1, name: "Blacksfit The Lagos Atlantic City piece", photoUrl: "/image/ATL.jpeg", fullimage:"/image/FULLATL.jpg", size: 42, price: 35000 },
-     { id: 2, name: "Blacksfit The Eyo piece", photoUrl: "/image/eyofront.png", fullimage:"/image/eyo.jpeg", size: 44, price: 35000 },
-    { id: 4, name: "Blacksfit Peice III", photoUrl: "/image/blank.jpeg", fullimage:"/image/FULLATL.jpg",size: 44, price: 35000 },
+    { id: 1, name: "The Atlantic City piece ", photoUrl: "/image/ATL.jpeg", fullimage:"/image/FULLATL.jpg", size: 42, price: 35000 },
+     { id: 2, name: "Eyo Adimu piece", photoUrl: "/image/eyofront.png", fullimage:"/image/eyo.jpeg", size: 44, price: 35000 },
+    // { id: 4, name: "Blacksfit Peice III", photoUrl: "/image/blank.jpeg", fullimage:"/image/FULLATL.jpg",size: 44, price: 35000 },
 
-    { id: 6, name: " Blacksfit Ibadan Piece", photoUrl: "/image/ibadan.png",fullimage:"/image/FULLIB.jpg", size: 44, price: 35000 },
+    { id: 6, name: "Ibadan brown roof piece", photoUrl: "/image/ibadan.png",fullimage:"/image/FULLIB.jpg", size: 44, price: 35000 },
 
    
-    { id: 9, name: "Blacksfit Peice IV", photoUrl: "/image/map.jpeg", fullimage:"/image/mapk.jpeg",size: 44, price: 35000 },
-    { id: 10, name: "Blacksfit Ogun piece", photoUrl: "/image/ogun.jpeg", fullimage:"/image/FULLOGUN.jpg",size: 44, price: 35000 },
-    { id: 11, name: "Blacksfit Peice V", photoUrl: "/image/bus.jpeg",fullimage:"/image/FULLBUS.png", size: 44, price: 35000 },
-    { id: 12, name: "Blacksfit Kurmi Peice ", photoUrl: "/image/singlekurmi.jpg",fullimage:"/image/kurmidual.png", size: 44, price: 35000 },
-    
+    { id: 9, name: "Kwara state piece", photoUrl: "/image/map.jpeg", fullimage:"/image/mapk.jpeg",size: 44, price: 35000 },
+    { id: 10, name: "Ogun piece", photoUrl: "/image/ogun.jpeg", fullimage:"/image/FULLOGUN.jpg",size: 44, price: 35000 },
+    { id: 11, name: "Lagos street piece", photoUrl: "/image/bus.jpeg",fullimage:"/image/FULLBUS.png", size: 44, price:35000 },
+    { id: 12, name: "Kurmi piece ", photoUrl: "/image/kurmifront.png",fullimage:"/image/newfkurmi.png", size: 44, price: 35000 },
+
 ];
-// console.log('Product image URLs:', productData.map(p => ({ name: p.name, url: p.photoUrl })));
+// console.log('Product image URLs:', productData.map(p => ({ name:p.name, url: p.photoUrl })));

@@ -220,8 +220,8 @@ const BlacksfitContact = () => {
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Visit Us',
-      details: ['Ogun: mowe'],
-      description: 'locations across Nigeria',
+      details: ['Igbobi, Mowe, Ogun State, Nigeria'],
+     
     },
     {
       icon: <Clock className="w-6 h-6" />,
