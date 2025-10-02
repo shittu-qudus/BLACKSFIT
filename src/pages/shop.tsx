@@ -558,7 +558,7 @@ const Shop = () => {
                       ₦{selectedProduct.price.toLocaleString()}
                     </p>
                     <p className="text-white-700 mb-4">
-                      This limited edition piece is part of our Lagos-inspired collection, 
+                      This limited edition piece is part of our BLACKSFIT-inspired collection, 
                       crafted with premium materials for the Nigerian climate. Each Blacksfit 
                       item is designed for comfort and style in urban environments, with 
                       attention to detail that reflects Nigerian street culture.
